@@ -1187,7 +1187,8 @@ body.nav-open {
   z-index: 5;
   padding: 20px;
   display: flex;
-  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
   max-width: var(--container-max);
   margin-inline: auto;
 }
@@ -1218,14 +1219,19 @@ body.nav-open {
 
 .hero-search-card {
   width: 100%;
-  max-width: 720px;
   background: #ffffff;
   border: 1px solid var(--color-border-subtle);
-  border-radius: 12px;
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
   box-shadow:
     0 24px 60px rgba(11, 19, 26, 0.18),
     0 8px 18px rgba(11, 19, 26, 0.08);
   overflow: hidden;
+}
+@media (min-width: 768px) {
+  .hero-search-card {
+    max-width: 720px;
+  }
 }
 @media (min-width: 1024px) {
   /* 50% of the container content area (= 700px at 1480 container)
@@ -1243,25 +1249,43 @@ body.nav-open {
   }
 }
 
-/* Sales / Rentals tabs — TWO COMPACT TABS on the LEFT of the search
-   card's top row, NOT a band across the full card width. The row
-   itself stretches to the card width, but the tabs sit left-aligned
-   inside it with white/clear space running across to the right. The
-   row has no tinted background — the card's white surface shows
-   through. Active tab: solid brand-cyan fill + white text. Inactive
-   tab: transparent background + dark text. Rectangular slots
-   (border-radius 0), sized to text content. */
+/* Sales / Rentals tabs — sit ABOVE the white search card, on the
+   powder-teal hero background. The tabs row's width matches the
+   card's width so the row has the same footprint as the card. The
+   inactive tab is white; the active tab is a FULL solid brand-cyan
+   block with white text, no white inside, and the green flush to the
+   top of the tabs row. Both tabs are the same height so the two
+   background blocks match. The leftmost tab carries a small top-left
+   border-radius and the rightmost tab carries a small top-right
+   border-radius — mirroring the search card's bottom corners so the
+   whole assembly reads as one rounded bar. The tabs row has
+   transparent background; to the right of the tabs the hero teal /
+   image shows through. Click swaps the .is-active class so the
+   green moves between the two tabs. */
 .hero-search-tabs {
   display: flex;
-  gap: 8px;
+  gap: 0;
   justify-content: flex-start;
-  padding: 14px 14px 12px;
+  align-items: flex-end;
+  padding: 0;
   background: transparent;
-  border-bottom: 1px solid var(--color-border-subtle);
+  border: 0;
+  width: 100%;
+  max-width: 720px;
+}
+@media (min-width: 1024px) {
+  .hero-search-tabs {
+    max-width: calc(50% + 80px);
+  }
+}
+@media (min-width: 1280px) {
+  .hero-search-tabs {
+    max-width: 760px;
+  }
 }
 .hero-search-tab {
-  padding: 8px 14px;
-  background: transparent;
+  padding: 16px 22px 14px;
+  background: #ffffff;
   border: 0;
   border-radius: 0;
   font-family: var(--font-sans);
@@ -1275,10 +1299,24 @@ body.nav-open {
     color 0.15s ease,
     background-color 0.15s ease;
 }
+
+/* Outer-corner rounding on the tabs mirrors the search card's bottom
+   corners — the leftmost tab rounds top-left, the rightmost tab rounds
+   top-right. The two tabs touch in the middle with square corners. */
+.hero-search-tab:first-child {
+  border-top-left-radius: 12px;
+}
+.hero-search-tab:last-child {
+  border-top-right-radius: 12px;
+}
+
 .hero-search-tab:hover {
   color: var(--color-brand-cyan);
 }
 .hero-search-tab.is-active {
+  /* Full tab — solid brand-cyan fill covering the entire tab rectangle,
+     white text, no white showing inside. The green is flush to the
+     top of the tabs row. */
   background: var(--color-brand-cyan);
   color: #ffffff;
 }

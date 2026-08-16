@@ -40,29 +40,36 @@ const heroImg = backgroundImage || "/estate-demo-hero.webp";
   </div>
 
   <!-- Floating search card — left-anchored, straddling the hero seam on
-       desktop; stacks normally below the hero copy on tablet/mobile. -->
+       desktop; stacks normally below the hero copy on tablet/mobile.
+       The Sales / Rentals tabs sit ABOVE the white search card on the
+       powder-teal hero background. The active tab is a FULL solid
+       brand-cyan block (no white inside, green flush to the top of
+       the search area); the inactive tab is white. The two tabs'
+       outer edges carry a small top-corner radius so the active tab
+       reads as a continuous block with the search card below. The
+       tabs row and card read as one unified search bar. -->
   <div class="hero-search-container">
+    <div class="hero-search-tabs" role="tablist" aria-label="Property status">
+      <button
+        type="button"
+        class="hero-search-tab is-active"
+        data-status="for-sale"
+        role="tab"
+        aria-selected="true"
+      >
+        Sales
+      </button>
+      <button
+        type="button"
+        class="hero-search-tab"
+        data-status="for-rent"
+        role="tab"
+        aria-selected="false"
+      >
+        Rentals
+      </button>
+    </div>
     <div class="hero-search-card">
-      <div class="hero-search-tabs" role="tablist" aria-label="Property status">
-        <button
-          type="button"
-          class="hero-search-tab is-active"
-          data-status="for-sale"
-          role="tab"
-          aria-selected="true"
-        >
-          Sales
-        </button>
-        <button
-          type="button"
-          class="hero-search-tab"
-          data-status="for-rent"
-          role="tab"
-          aria-selected="false"
-        >
-          Rentals
-        </button>
-      </div>
       <form action="/properties" method="get" class="search-bar">
         <input type="hidden" name="status" value="for-sale" data-status-input />
         <input
