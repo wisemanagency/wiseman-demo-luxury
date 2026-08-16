@@ -51,7 +51,7 @@
   --font-script: "Playfair Display", Georgia, serif;
 
   /* Spacing */
-  --container-max: 1200px;
+  --container-max: 1480px;
   --section-padding-desktop: 80px;
   --section-padding-mobile: 56px;
 
@@ -475,11 +475,9 @@ main:not(:has(> .section:last-child)) {
   min-height: 72px;
   gap: 12px;
   position: relative;
-  /* Header gets a wider container than the rest of the site (which uses
-     `--container-max: 1200px`). 1480px leaves a comfortable white margin
-     either side at common desktop widths and lets the logo + phone sit
-     well outside the standard content track. */
-  max-width: 1480px;
+  /* Inherits `--container-max: 1480px` from the `.container` class, so
+     the logo + phone edges line up with the rest of the page. No
+     per-section override needed. */
 }
 .site-header .wordmark {
   font-family: var(--font-display);
