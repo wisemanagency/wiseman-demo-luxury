@@ -1202,10 +1202,13 @@ body.nav-open {
      panel and the photo. An asymmetric negative margin-bottom (larger
      than the top) makes the card visibly extend past the
      hero/next-section boundary so it physically straddles that seam
-     too — not just the hero/photo seam. */
+     too — the card overhangs well into the next section so it reads
+     as a floating bar between the hero and the page below. The top
+     portion of the card still sits inside the hero, the bottom
+     portion extends into the next section. */
   .hero-search-container {
     margin-top: -56px;
-    margin-bottom: -72px;
+    margin-bottom: -160px;
     padding: 20px 40px 20px 40px;
   }
 }
@@ -1331,14 +1334,24 @@ body.nav-open {
   background-color: #ffffff;
 }
 
-/* Section immediately after the hero no longer needs the overhanging-search
-   padding because the search card is now anchored inside the hero bounds. */
+/* Section immediately after the hero — padding-top accounts for the
+   search card's overhang past the hero/next-section boundary. The
+   card has margin-bottom: -160px on the search container at desktop
+   so it floats well into the next section. Below desktop the card
+   sits in normal flow with no overhang, so the section needs less
+   top padding. Specific sections (e.g. .listings-cta) override these
+   defaults with their own padding-top rules. */
 .hero + .section {
   padding-top: 64px;
 }
 @media (min-width: 768px) {
   .hero + .section {
     padding-top: 80px;
+  }
+}
+@media (min-width: 1024px) {
+  .hero + .section {
+    padding-top: 200px;
   }
 }
 
@@ -1928,6 +1941,13 @@ body.nav-open {
 /* =========================================================================
    Listings CTA — 2-col image + copy + red button, sits under the hero
    ========================================================================= */
+/* Listings CTA — padding-top accounts for the search card's overhang
+   past the hero/next-section boundary. The card has margin-bottom:
+   -160px on the search container at desktop, so the section needs
+   enough top padding to keep its content clear of the floating card.
+   The desktop padding-top is larger than the card's overhang so the
+   section's image + copy have breathing room from the hero — the
+   image isn't flush to the top of the section. */
 .listings-cta {
   padding-block: var(--section-padding-mobile);
   padding-top: 96px;
@@ -1936,7 +1956,12 @@ body.nav-open {
 @media (min-width: 768px) {
   .listings-cta {
     padding-block: var(--section-padding-desktop);
-    padding-top: 120px;
+    padding-top: 80px;
+  }
+}
+@media (min-width: 1024px) {
+  .listings-cta {
+    padding-top: 200px;
   }
 }
 .listings-cta-grid {
