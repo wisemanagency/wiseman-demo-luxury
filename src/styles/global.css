@@ -475,6 +475,11 @@ main:not(:has(> .section:last-child)) {
   min-height: 72px;
   gap: 12px;
   position: relative;
+  /* Header gets a wider container than the rest of the site (which uses
+     `--container-max: 1200px`). 1480px leaves a comfortable white margin
+     either side at common desktop widths and lets the logo + phone sit
+     well outside the standard content track. */
+  max-width: 1480px;
 }
 .site-header .wordmark {
   font-family: var(--font-display);
@@ -518,7 +523,7 @@ main:not(:has(> .section:last-child)) {
   /* Display is controlled by Tailwind (hidden lg:flex). We absolute-centre
      it so the nav stays put when the wordmark or phone link widens. */
   align-items: center;
-  gap: 28px;
+  gap: 34px;
   height: 72px;
   position: absolute;
   left: 50%;
