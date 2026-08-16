@@ -44,3 +44,4 @@ sales-export.tar.gz
 *export*.tar.gz
 
 .vercel
+.env*
