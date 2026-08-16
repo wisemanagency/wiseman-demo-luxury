@@ -38,3 +38,7 @@ images/
 # Local debug HTML snapshots
 *_local.html
 props2.html
+
+# One-off Sanity dataset exports (created during repo bootstrap / migrations)
+sales-export.tar.gz
+*export*.tar.gz

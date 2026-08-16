@@ -12,7 +12,7 @@ if (!token) {
 }
 
 const client = createClient({
-  projectId: process.env.SANITY_PROJECT_ID || "roizovwr",
+  projectId: process.env.SANITY_PROJECT_ID || "6bbxm4z3",
   dataset: "production",
   token,
   apiVersion: "2024-01-01",
