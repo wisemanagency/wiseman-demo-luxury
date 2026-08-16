@@ -1,0 +1,60 @@
+---
+/**
+ * Gold squiggle divider — three small wavy strokes centered horizontally.
+ * Sits above every major section heading in the luxury theme. Pure SVG so
+ * it scales cleanly and picks up the currentColor for the gold.
+ */
+interface Props {
+  /** Width in pixels (height auto-scales). Default 80. */
+  width?: number;
+  /** Set to "muted" to render at lower opacity, e.g. on dark backgrounds. */
+  tone?: "default" | "muted";
+  class?: string;
+}
+
+const { width = 80, tone = "default", class: className } = Astro.props;
+const opacity = tone === "muted" ? 0.55 : 1;
+---
+
+<svg
+  class={`squiggle-divider ${className ?? ""}`}
+  width={width}
+  height={Math.round(width * (12 / 80))}
+  viewBox="0 0 80 12"
+  fill="none"
+  aria-hidden="true"
+  style={`opacity: ${opacity}; color: var(--color-luxury-gold);`}
+>
+  {/* Three parallel wavy strokes, deliberately uneven to feel hand-drawn. */}
+  <path
+    d="M2 3 Q 8 0 14 3 T 26 3 T 38 3"
+    stroke="currentColor"
+    stroke-width="1.2"
+    stroke-linecap="round"
+    fill="none"
+  />
+  <path
+    d="M2 6 Q 8 9 14 6 T 26 6 T 38 6"
+    stroke="currentColor"
+    stroke-width="1.2"
+    stroke-linecap="round"
+    fill="none"
+  />
+  <path
+    d="M42 3 Q 48 0 54 3 T 66 3 T 78 3"
+    stroke="currentColor"
+    stroke-width="1.2"
+    stroke-linecap="round"
+    fill="none"
+  />
+</svg>
+
+<style>
+  /* Use display: block (inheritable from parent) so it centers cleanly. */
+  .squiggle-divider {
+    display: block;
+    margin: 8px auto 14px;
+  }
+</style>
+</content>
+</invoke>

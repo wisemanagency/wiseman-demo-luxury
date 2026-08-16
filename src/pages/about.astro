@@ -3,6 +3,7 @@ import Base from "@/layouts/Base.astro";
 import Breadcrumbs from "@/components/Breadcrumbs.astro";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel.astro";
 import PageHero from "@/components/PageHero.astro";
+import SquiggleDivider from "@/components/SquiggleDivider.astro";
 import { sanityClient, urlFor } from "@/lib/sanity";
 import { siteSettingsQuery, allAgentsQuery } from "@/lib/queries";
 
@@ -108,6 +109,7 @@ const stats = [
   <section class="section section-alt stats-band">
     <div class="container">
       <div class="section-heading">
+        <SquiggleDivider />
         <h2>By the Numbers</h2>
         <p>A track record built one move at a time</p>
       </div>
@@ -129,6 +131,7 @@ const stats = [
   <section class="section why-band">
     <div class="container">
       <div class="section-heading">
+        <SquiggleDivider />
         <h2 style="color: #fff;">What We Stand For</h2>
         <p>The three principles every instruction rests on</p>
       </div>
@@ -175,6 +178,7 @@ const stats = [
     <section class="section">
       <div class="container">
         <div class="section-heading">
+          <SquiggleDivider />
           <h2>Meet Our Estate Agents</h2>
           <p>The friendly faces behind every viewing, sale &amp; valuation</p>
         </div>
