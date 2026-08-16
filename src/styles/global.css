@@ -986,32 +986,38 @@ body.nav-open {
 }
 
 /* =========================================================================
-   Hero — full-width powder-teal background with a 2-column container
-   grid (copy left, photo right) and a floating Sales/Rentals search
-   card straddling the photo seam and overhanging the hero / next-
-   section boundary. The teal panel spans the entire viewport edge-to-
-   edge; the grid + photo live inside `--container-max` so the copy
-   text aligns to the logo / nav / footer at every viewport, and the
-   photo sits INSIDE the right half of the container (not bleeding) so
-   the teal background shows as a frame around it on wider viewports.
+   Hero — full-width split composition: powder-teal background spans
+   edge-to-edge (left half = teal, right half = photo), with a floating
+   Sales/Rentals search card straddling the photo seam and overhanging
+   the hero / next-section boundary. Both halves are top-to-bottom full
+   bleed: teal fills viewport-left to grid-seam, photo fills grid-seam
+   to viewport-right. The grid itself sits inside `--container-max` so
+   the copy text aligns to the logo / nav / footer at every viewport.
    ========================================================================= */
 .hero {
   position: relative;
   /* Powder-teal panel across the full viewport width — this is the
-     "background" that frames the hero. The photo sits inset over
-     this background, not bleeding past it. */
+     "background" the photo sits on top of. The photo column paints
+     over this background on its half of the hero. `overflow: visible`
+     lets the search card overhang past the hero's bottom edge. */
   background: var(--color-luxury-bg-soft);
   color: #fff;
   overflow: visible;
+  /* Positioning context for the absolutely-positioned .hero-image
+     (which spans the full hero height including the search card
+     overhang area below the grid). */
 }
 
 /* Two-column grid: copy panel (left) + photo (right). The grid is
    constrained to `--container-max` so its left edge matches the rest
    of the page (logo, nav, footer, listings CTA). At >=1024px the
-   photo column sits inside the right half of the container — it does
-   NOT bleed past the grid edge, so the teal background frames the
-   photo on wider viewports (a deliberate "card on a coloured field"
-   composition matching the reference). */
+   photo is pulled out of the grid flow (absolutely positioned, see
+   .hero-image below) so it can span the FULL hero height — including
+   the search-card overhang area below the grid — and bleed to the
+   viewport right edge without the grid constraining it. .hero-grid
+   is intentionally NOT `position: relative` so .hero (which is) is
+   the positioning context for the photo, letting it span the full
+   hero height. */
 .hero-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -1019,10 +1025,14 @@ body.nav-open {
   min-height: 580px;
   max-width: var(--container-max);
   margin-inline: auto;
+  /* Sit above the absolutely-positioned .hero-image so the copy and
+     any future grid content paint on top of the photo. z-index on a
+     non-positioned element works because it creates a stacking context. */
+  z-index: 2;
 }
 @media (min-width: 1024px) {
   .hero-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     min-height: 720px;
   }
 }
@@ -1032,7 +1042,9 @@ body.nav-open {
    buttons, and search card all align to the logo / nav / footer x at
    every viewport. The panel itself is transparent — the powder-teal
    colour comes from .hero's background, so the panel never paints a
-   competing half-width block over the photo side. */
+   competing half-width block over the photo side. At >=1024px the
+   grid is single-column (the photo is absolutely-positioned), so we
+   cap the copy at half the grid width so it stays on the LEFT half. */
 .hero-copy {
   display: flex;
   flex-direction: column;
@@ -1049,6 +1061,7 @@ body.nav-open {
 @media (min-width: 1024px) {
   .hero-copy {
     padding: 80px 64px 80px 40px;
+    max-width: 50%;
   }
 }
 
@@ -1110,23 +1123,39 @@ body.nav-open {
 }
 
 /* Right photo — uses an <img> so it scales for srcset later. The photo
-   sits INSIDE the right half of the constrained grid (it does NOT
-   bleed past the grid right edge). On desktop the column is ~740px
-   wide; on mobile it stacks below the copy at full container width.
-   The hero's powder-teal background shows as a frame around the photo
-   on wider viewports — matching the reference layout. */
+   spans the full height of the hero (top-to-bottom — including the
+   search card overhang area below the grid) and bleeds to the viewport
+   right edge. No inset, no radius. The teal background on .hero should
+   NOT show past the photo on the right or below the photo — the photo
+   covers the entire right half of the hero, end-to-end. The hero is
+   the positioning context (`position: relative` set on .hero) so the
+   absolutely-positioned photo anchors to it; the photo fills from the
+   top to the hero's full bottom, regardless of the search card's
+   negative margins. */
 .hero-image {
   position: relative;
   min-height: 320px;
   overflow: hidden;
   background: var(--color-brand-navy);
-  /* Small inner radius so the photo reads as a framed element on the
-     teal background (not a hard rectangle). */
-  border-radius: 0;
 }
 @media (min-width: 1024px) {
   .hero-image {
-    border-radius: 8px;
+    /* Pulled out of the grid flow (grid is single-column at >=1024px)
+       so we can position the photo to span the full hero height —
+       including the area below the grid where the search card hangs.
+       Anchored to .hero (the positioning context) from top to bottom.
+       `left: 50%` puts the left edge at viewport center; `right:
+       -17px` extends the right edge past the hero (= past the body
+       width, which excludes the scrollbar) so the photo reaches the
+       absolute viewport right edge. The hero has `overflow: visible`
+       so the search card overhang is preserved; the 17px overshoot
+       is invisible behind the scrollbar track. */
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    right: -17px;
+    z-index: 1;
   }
 }
 .hero-image img {
@@ -1261,22 +1290,24 @@ body.nav-open {
   }
 }
 
-/* Sales / Rentals tabs — the WHOLE TOP ROW of the card is teal-tinted,
-   spanning the full width of the search card. The two tabs sit inside
-   that band as rectangular slots: the active tab is filled with solid
-   brand-cyan (white text), the inactive tab sits on the lighter teal
-   panel and reads as "the background" rather than a separate button.
-   This is the "one filled, one clear" pattern from the reference —
-   not two compact pills floating in white space. */
+/* Sales / Rentals tabs — TWO COMPACT TABS on the LEFT of the search
+   card's top row, NOT a band across the full card width. The row
+   itself stretches to the card width, but the tabs sit left-aligned
+   inside it with white/clear space running across to the right. The
+   row has no tinted background — the card's white surface shows
+   through. Active tab: solid brand-cyan fill + white text. Inactive
+   tab: transparent background + dark text. Rectangular slots
+   (border-radius 0), sized to text content. */
 .hero-search-tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  background: rgba(44, 101, 105, 0.18);
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+  padding: 14px 14px 12px;
+  background: transparent;
   border-bottom: 1px solid var(--color-border-subtle);
-  padding: 0;
 }
 .hero-search-tab {
-  padding: 14px 20px;
+  padding: 8px 14px;
   background: transparent;
   border: 0;
   border-radius: 0;
@@ -1285,15 +1316,13 @@ body.nav-open {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-text-primary);
+  color: var(--color-text-secondary);
   cursor: pointer;
-  text-align: center;
   transition:
     color 0.15s ease,
     background-color 0.15s ease;
 }
-.hero-search-tab:hover:not(.is-active) {
-  background: rgba(44, 101, 105, 0.08);
+.hero-search-tab:hover {
   color: var(--color-brand-cyan);
 }
 .hero-search-tab.is-active {
