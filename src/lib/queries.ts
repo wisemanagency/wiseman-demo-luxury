@@ -21,6 +21,11 @@ export const allPropertiesQuery = `
     "thumbnail": images[0]{
       asset->{url, metadata{dimensions, lqip}},
       alt
+    },
+    "agent": agent->{
+      name,
+      "slug": slug.current,
+      photo
     }
   }
 `;
@@ -105,6 +110,11 @@ export const propertiesByAreaQuery = `
     "thumbnail": images[0]{
       asset->{url, metadata{dimensions, lqip}},
       alt
+    },
+    "agent": agent->{
+      name,
+      "slug": slug.current,
+      photo
     }
   }
 `;
@@ -125,6 +135,11 @@ export const featuredPropertiesQuery = `
     "thumbnail": images[0]{
       asset->{url, metadata{dimensions, lqip}},
       alt
+    },
+    "agent": agent->{
+      name,
+      "slug": slug.current,
+      photo
     }
   }
 `;
@@ -256,6 +271,11 @@ export const propertiesByAgentQuery = `
     "thumbnail": images[0]{
       asset->{url, metadata{dimensions, lqip}},
       alt
+    },
+    "agent": agent->{
+      name,
+      "slug": slug.current,
+      photo
     }
   }
 `;

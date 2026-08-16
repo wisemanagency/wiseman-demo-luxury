@@ -1,5 +1,6 @@
 ---
 import { formatPrice, statusLabel } from "@/lib/utils";
+import { urlFor } from "@/lib/sanity";
 
 interface Props {
   property: {
@@ -19,6 +20,12 @@ interface Props {
       asset: { url: string; metadata?: { lqip?: string } };
       alt?: string;
     };
+    /** Optional listing agent — when present, render the avatar badge on the photo. */
+    agent?: {
+      name: string;
+      slug?: string;
+      photo?: unknown;
+    };
   };
 }
 
@@ -36,6 +43,7 @@ const {
   postcode,
   featured,
   thumbnail,
+  agent,
 } = property;
 
 const imageUrl = thumbnail?.asset?.url
@@ -45,17 +53,27 @@ const lqip = thumbnail?.asset?.metadata?.lqip;
 
 const statusClass =
   status === "for-sale" || status === "sold-stc" || status === "under-offer"
-    ? "badge-sale"
+    ? "badge pill-status-sale"
     : status === "for-rent" || status === "let-agreed" || status === "let"
-      ? "badge-rent"
-      : "badge-muted";
+      ? "badge pill-status-rent"
+      : "badge pill-status-muted";
+
+// Listing-agent avatar badge — uses Sanity urlFor when a photo is present,
+// otherwise falls back to the agent's initials in a coloured disc.
+const agentPhotoUrl = agent?.photo
+  ? urlFor(agent.photo).width(80).height(80).fit("crop").auto("format").url()
+  : null;
+const agentInitials = agent?.name
+  ? agent.name.split(" ").map((n) => n[0]).join("").slice(0, 2)
+  : "";
 ---
 
 <a
   href={`/properties/${slug}`}
   class="card property-card block"
+  aria-label={title}
 >
-  <div class="property-image relative">
+  <div class="property-image luxury-property-image">
     <img
       src={imageUrl}
       alt={thumbnail?.alt || title}
@@ -64,11 +82,43 @@ const statusClass =
       class="w-full h-full object-cover"
       style={lqip ? `background-image: url(${lqip}); background-size: cover;` : ""}
     />
-    <span class:list={["badge absolute top-3 left-3", statusClass]}>
-      {statusLabel(status)}
-    </span>
-    {featured && (
-      <span class="badge badge-featured absolute top-3 right-3">Featured</span>
+
+    <div class="card-pills card-pills-tl">
+      <span class:list={["badge", statusClass]}>
+        {statusLabel(status)}
+      </span>
+      {featured && (
+        <span class="badge pill-featured">Featured</span>
+      )}
+    </div>
+
+    <button
+      type="button"
+      class="card-save"
+      aria-label={`Save ${title} to shortlist`}
+      data-save
+      onclick="event.preventDefault();this.classList.toggle('is-saved');"
+    >
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <path
+          d="M12 21s-7.5-4.6-9.6-9.2C1 8.4 3 5 6.4 5c1.9 0 3.4 1 4.6 2.4C12.2 6 13.7 5 15.6 5 19 5 21 8.4 19.6 11.8 17.5 16.4 12 21 12 21z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+
+    {agent && (
+      <div class="card-avatar" aria-label={`Listed by ${agent.name}`}>
+        {agentPhotoUrl ? (
+          <img src={agentPhotoUrl} alt={agent.name} loading="lazy" />
+        ) : (
+          <span class="card-avatar-initials">{agentInitials}</span>
+        )}
+      </div>
     )}
   </div>
 

@@ -72,7 +72,7 @@ const socialIcons: Record<string, string> = {
 {variant === "full" ? (
   <div class="card property-card agent-card-full">
     <a href={`/team/${slug}`} class="block">
-      <div class="aspect-square overflow-hidden" style="background: var(--color-surface-alt);">
+      <div class="aspect-square overflow-hidden agent-card-photo" style="background: var(--color-surface-alt);">
         {photoUrl ? (
           <img
             src={photoUrl}
@@ -88,6 +88,9 @@ const socialIcons: Record<string, string> = {
             </span>
           </div>
         )}
+        {(role === "Founder" || role === "Senior Agent" || role === "Director") && (
+          <span class="badge pill-featured agent-card-badge">{role}</span>
+        )}
       </div>
     </a>
     <div class="card-body">
@@ -96,7 +99,13 @@ const socialIcons: Record<string, string> = {
         <p style="font-size: 13px; font-weight: 500; color: var(--color-luxury-gold); margin-bottom: 12px;">{role}</p>
       </a>
       {branch && (
-        <p style="font-size: 12px; color: var(--color-text-muted); margin-bottom: 12px;">{branch.name}</p>
+        <span class="badge pill-status-muted agent-card-branch">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1118 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          {branch.name}
+        </span>
       )}
       {specialisms && specialisms.length > 0 && (
         <div class="flex flex-wrap gap-1.5 mb-4">

@@ -327,6 +327,134 @@ main:not(:has(> .section:last-child)) {
   border-radius: 6px;
 }
 
+/* ----- Luxury property card variants -----
+   Soften the image radius, add rounded status pills, a save (heart) icon,
+   and a small listing-agent avatar badge that overlaps the photo's
+   bottom-right corner. Layout is positioned so the pills cluster on the
+   top-left and the save icon sits alone on the top-right. */
+.luxury-property-image {
+  border-radius: var(--radius-card);
+  position: relative;
+}
+.card-pills {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
+}
+.card-pills-tl {
+  top: 12px;
+  left: 12px;
+}
+
+/* Pill-style status badges — smaller, more refined, rounded-full */
+.pill-status-sale,
+.pill-status-rent,
+.pill-status-muted,
+.pill-featured {
+  padding: 4px 10px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  border-radius: 999px;
+  text-transform: uppercase;
+  line-height: 1.2;
+  border: 0;
+  box-shadow: 0 4px 10px rgba(11, 19, 26, 0.18);
+}
+.pill-status-sale {
+  background: var(--color-brand-cyan);
+  color: #fff;
+}
+.pill-status-rent {
+  background: var(--color-luxury-bg-soft);
+  color: var(--color-brand-cyan);
+  border: 1px solid rgba(44, 101, 105, 0.2);
+  box-shadow: none;
+}
+.pill-status-muted {
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--color-text-primary);
+  box-shadow: 0 4px 10px rgba(11, 19, 26, 0.12);
+}
+.pill-featured {
+  background: var(--color-luxury-gold);
+  color: #fff;
+}
+
+/* Save (heart) icon — top-right of the photo. White circle with a teal
+   stroke that fills to gold when toggled. */
+.card-save {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 0;
+  background: #fff;
+  color: var(--color-brand-cyan);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(11, 19, 26, 0.18);
+  transition:
+    transform 0.18s ease,
+    color 0.18s ease,
+    background-color 0.18s ease;
+}
+.card-save:hover {
+  transform: scale(1.06);
+  color: var(--color-luxury-gold);
+}
+.card-save.is-saved {
+  color: var(--color-luxury-gold);
+  background: #fff;
+}
+.card-save.is-saved svg path {
+  fill: var(--color-luxury-gold);
+}
+
+/* Listing-agent avatar badge — small circle overlapping the photo's
+   bottom-right corner. Doubles as a visual cue that an agent is tied
+   to the listing. */
+.card-avatar {
+  position: absolute;
+  bottom: -14px;
+  right: 14px;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--color-brand-cyan);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #fff;
+  box-shadow: 0 8px 18px rgba(11, 19, 26, 0.22);
+}
+.card-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card-avatar-initials {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* Property card slightly more breathing room when the avatar badge
+   sits below the image edge so the card-body doesn't overlap. */
+.card.property-card:has(.card-avatar) .card-body {
+  padding-top: 28px;
+}
+
 /* ----- Header / nav ----- */
 .site-header {
   background: var(--color-brand-navy);
@@ -1405,6 +1533,37 @@ body.nav-open {
 .agent-card-full:hover .agent-photo-luxury {
   filter: grayscale(35%) contrast(1.05);
   transform: scale(1.02);
+}
+/* Rounded photo frame for the full AgentCard. The aspect-square container
+   previously had no radius — bump it so the card image picks up the same
+   radius as the property card. */
+.agent-card-photo {
+  border-radius: var(--radius-card);
+  position: relative;
+}
+/* Senior / Director badge overlays the photo top-right. */
+.agent-card-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+/* Branch pill in the card-body — small, with a map-pin icon. */
+.agent-card-branch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  color: var(--color-brand-cyan);
+  background: rgba(44, 101, 105, 0.08);
+  margin-bottom: 14px;
+}
+.agent-card-branch svg {
+  flex-shrink: 0;
 }
 
 /* =========================================================================
