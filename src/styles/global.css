@@ -455,29 +455,45 @@ main:not(:has(> .section:last-child)) {
   padding-top: 28px;
 }
 
-/* ----- Header / nav ----- */
+/* ----- Header / nav -----
+   Single white row: logo (left), nav (centred), phone (right). Nav is
+   pulled out of the flex flow with absolute positioning so the centre
+   alignment doesn't drift when the logo or phone changes width. */
 .site-header {
-  background: var(--color-brand-navy);
-  color: #fff;
+  background: #ffffff;
+  color: var(--color-text-primary);
   position: sticky;
   top: 0;
   z-index: 50;
+  border-bottom: 1px solid var(--color-border-subtle);
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
 }
 .site-header-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 64px;
+  min-height: 72px;
   gap: 12px;
+  position: relative;
 }
 .site-header .wordmark {
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 17px;
-  color: #fff;
+  color: var(--color-text-primary);
   letter-spacing: 0;
   text-decoration: none;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+/* Scope: the footer wordmark (`.site-footer .footer-bottom .wordmark`) has
+   no SVG inside — only the header wordmark does — so `.wordmark svg` here
+   is unique to the header logo icon. Keeping specificity at (0,1,1) to
+   avoid descending-specificity conflicts with later `.X svg` rules. */
+.wordmark svg {
+  color: var(--color-luxury-gold);
 }
 @media (min-width: 480px) {
   .site-header .wordmark {
@@ -489,36 +505,89 @@ main:not(:has(> .section:last-child)) {
     font-size: 20px;
   }
 }
-.site-nav {
-  /* Display is controlled by Tailwind (hidden lg:flex) so the mobile
-     hamburger can take over below the lg breakpoint. We only set the
-     flex child layout here. */
+
+/* Right-hand cluster — phone link on desktop, hamburger on mobile.
+   Matches the visual weight of the wordmark so the header stays balanced. */
+.site-header-end {
+  display: inline-flex;
   align-items: center;
-  gap: 24px;
-  height: 64px;
+  gap: 12px;
+}
+
+.site-nav {
+  /* Display is controlled by Tailwind (hidden lg:flex). We absolute-centre
+     it so the nav stays put when the wordmark or phone link widens. */
+  align-items: center;
+  gap: 28px;
+  height: 72px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 .site-nav a.nav-link {
-  color: #fff;
+  color: var(--color-text-primary);
   text-decoration: none;
   font-size: 13px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  transition: opacity 0.15s ease;
+  transition: color 0.15s ease;
+  white-space: nowrap;
 }
 .site-nav a.nav-link:hover {
-  opacity: 0.8;
+  color: var(--color-brand-cyan);
 }
-.site-nav a.nav-cta {
-  margin-left: 8px;
+
+/* Phone link (right side, desktop only) — display is governed by
+   Tailwind utilities (`hidden lg:inline-flex` on the element). Keeping
+   `display` out of this rule so the `hidden` utility wins at <lg. */
+.header-phone {
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-brand-cyan);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background-color 0.15s ease;
+}
+.header-phone svg {
+  color: var(--color-luxury-gold);
+}
+.header-phone:hover {
+  border-color: var(--color-brand-cyan);
+  color: var(--color-brand-cyan-dark);
+  background-color: rgba(44, 101, 105, 0.04);
+}
+
+/* Phone link inside the mobile menu — full-width and matches the
+   mobile link treatment (border-bottom, hover bg). Higher specificity
+   than `.site-mobile-menu a` (0,2,1 vs 0,1,1) so we don't need
+   `!important` to override its uppercase / font-weight defaults. */
+.site-mobile-menu a.header-phone-mobile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  color: var(--color-brand-cyan);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
 }
 
 /* Mobile menu (shown when toggled) */
 .site-mobile-menu {
-  background: var(--color-brand-navy-dark);
-  color: #fff;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 12px 24px rgba(8, 44, 87, 0.25);
+  background: #ffffff;
+  color: var(--color-text-primary);
+  border-top: 1px solid var(--color-border-subtle);
+  box-shadow: 0 12px 24px rgba(8, 44, 87, 0.08);
   animation: mobile-menu-slide 180ms ease-out;
 }
 @keyframes mobile-menu-slide {
@@ -540,13 +609,13 @@ main:not(:has(> .section:last-child)) {
   display: flex;
   align-items: center;
   padding: 14px 20px;
-  color: #fff;
+  color: var(--color-text-primary);
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--color-border-subtle);
   transition: background-color 0.15s ease;
 }
 .site-mobile-menu a:last-child {
@@ -554,12 +623,7 @@ main:not(:has(> .section:last-child)) {
 }
 .site-mobile-menu a:hover,
 .site-mobile-menu a:focus-visible {
-  background-color: rgba(255, 255, 255, 0.06);
-}
-.site-mobile-menu a.btn {
-  margin: 16px 20px 4px;
-  justify-content: center;
-  border-bottom: none;
+  background-color: var(--color-surface-alt);
 }
 
 /* Hamburger button — only styled below the lg breakpoint so the
@@ -567,7 +631,7 @@ main:not(:has(> .section:last-child)) {
 .site-hamburger {
   border: none;
   background: transparent;
-  color: #fff;
+  color: var(--color-text-primary);
   cursor: pointer;
   transition: background-color 0.15s ease;
 }
@@ -581,7 +645,7 @@ main:not(:has(> .section:last-child)) {
     border-radius: 6px;
   }
   .site-hamburger:hover {
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: rgba(11, 19, 26, 0.06);
   }
   .site-hamburger svg {
     width: 24px;
