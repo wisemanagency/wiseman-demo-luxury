@@ -77,11 +77,22 @@ function statusLabel(status: string): string {
   return map[status] || status;
 }
 
-function statusColour(status: string): string {
-  if (status === "for-sale" || status === "for-rent") return "bg-green-600";
-  if (status === "under-offer" || status === "let-agreed") return "bg-amber-500";
-  return "bg-red-600";
-}
+/* Luxury palette mapped to inline styles so the JSX stays simple and the
+   colours stay centralised. Mirrors the CSS tokens in global.css. */
+const palette = {
+  bg: "#ffffff",
+  bgSoft: "#dceaea",
+  textPrimary: "#1b2733",
+  textSecondary: "#5b6670",
+  textMuted: "#84909c",
+  border: "#e6eaee",
+  teal: "#2c6569",
+  tealDark: "#1f4e51",
+  gold: "#c9a227",
+  goldDark: "#a88419",
+  radius: "10px",
+  radiusPill: "999px",
+};
 
 export default function PropertyFilter({ properties, towns, propertyTypes }: Props) {
   const [status, setStatus] = useState("");
@@ -95,18 +106,15 @@ export default function PropertyFilter({ properties, towns, propertyTypes }: Pro
   const filtered = useMemo(() => {
     let result = [...properties];
 
-    // Text search
     if (search.trim()) {
       const q = search.toLowerCase();
       result = result.filter(
         (p) =>
           p.title.toLowerCase().includes(q) ||
           p.town?.toLowerCase().includes(q) ||
-          p.postcode?.toLowerCase().includes(q)
+          p.postcode?.toLowerCase().includes(q),
       );
     }
-
-    // Filters
     if (status) result = result.filter((p) => p.status === status);
     if (town) result = result.filter((p) => p.town === town);
     if (type) result = result.filter((p) => p.propertyType === type);
@@ -116,7 +124,6 @@ export default function PropertyFilter({ properties, towns, propertyTypes }: Pro
       result = result.filter((p) => p.price >= min && p.price <= max);
     }
 
-    // Sort
     switch (sort) {
       case "price-asc":
         result.sort((a, b) => a.price - b.price);
@@ -128,168 +135,476 @@ export default function PropertyFilter({ properties, towns, propertyTypes }: Pro
         result.sort((a, b) => (b.bedrooms ?? 0) - (a.bedrooms ?? 0));
         break;
       default:
-        break; // already ordered by newest from GROQ
+        break;
     }
-
     return result;
   }, [properties, status, town, type, minBeds, priceRange, sort, search]);
 
-  const selectClass =
-    "w-full px-3 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 appearance-none cursor-pointer";
+  /* ----- Shared styling primitives ----- */
+  const labelStyle: React.CSSProperties = {
+    display: "block",
+    fontSize: 11,
+    fontWeight: 600,
+    letterSpacing: "0.12em",
+    textTransform: "uppercase",
+    color: palette.teal,
+    marginBottom: 8,
+  };
 
-  return (
-    <div>
-      {/* Filter bar */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 md:p-6 mb-8">
-        {/* Search */}
-        <div className="mb-4">
+  const fieldStyle: React.CSSProperties = {
+    width: "100%",
+    padding: "10px 12px",
+    background: "#fff",
+    border: `1px solid ${palette.border}`,
+    borderRadius: 8,
+    fontSize: 14,
+    color: palette.textPrimary,
+    fontFamily: "Poppins, system-ui, sans-serif",
+    appearance: "none",
+    WebkitAppearance: "none",
+    backgroundImage:
+      "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'><path d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>\")",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "right 12px center",
+    cursor: "pointer",
+  };
+
+  const clearAll = () => {
+    setStatus("");
+    setTown("");
+    setType("");
+    setMinBeds("");
+    setPriceRange("");
+    setSearch("");
+  };
+
+  /* ----- Sidebar (filter controls) ----- */
+  const sidebar = (
+    <aside
+      className="pf-sidebar"
+      style={{
+        background: palette.bg,
+        border: `1px solid ${palette.border}`,
+        borderRadius: palette.radius,
+        padding: 24,
+        boxShadow: "0 6px 18px rgba(15, 26, 33, 0.04)",
+      }}
+    >
+      <div style={{ marginBottom: 24 }}>
+        <span
+          style={{
+            display: "inline-block",
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: palette.gold,
+            marginBottom: 6,
+          }}
+        >
+          Refine
+        </span>
+        <h3
+          style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontSize: 22,
+            fontWeight: 600,
+            color: palette.textPrimary,
+            margin: 0,
+            lineHeight: 1.2,
+          }}
+        >
+          Your search
+        </h3>
+      </div>
+
+      <div style={{ marginBottom: 18 }}>
+        <label style={labelStyle} htmlFor="pf-search">
+          Keyword
+        </label>
+        <div style={{ position: "relative" }}>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={palette.textMuted}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              left: 12,
+              top: "50%",
+              transform: "translateY(-50%)",
+              pointerEvents: "none",
+            }}
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
           <input
+            id="pf-search"
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by location, postcode, or keyword..."
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
+            placeholder="Location, postcode, or keyword…"
+            style={{
+              ...fieldStyle,
+              backgroundImage: "none",
+              paddingLeft: 36,
+              cursor: "text",
+              textAlign: "left",
+            }}
           />
-        </div>
-
-        {/* Dropdowns */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            className={selectClass}
-          >
-            {statusOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-
-          <select value={town} onChange={(e) => setTown(e.target.value)} className={selectClass}>
-            <option value="">All Areas</option>
-            {towns.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-
-          <select value={type} onChange={(e) => setType(e.target.value)} className={selectClass}>
-            <option value="">All Types</option>
-            {propertyTypes.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={minBeds}
-            onChange={(e) => setMinBeds(e.target.value)}
-            className={selectClass}
-          >
-            {bedroomOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={priceRange}
-            onChange={(e) => setPriceRange(e.target.value)}
-            className={selectClass}
-          >
-            {priceRanges.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-
-          <select value={sort} onChange={(e) => setSort(e.target.value)} className={selectClass}>
-            {sortOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
         </div>
       </div>
 
-      {/* Results count */}
-      <p className="text-sm text-gray-500 mb-6">
-        {filtered.length} {filtered.length === 1 ? "property" : "properties"} found
-      </p>
-
-      {/* Grid */}
-      {filtered.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((property) => (
-            <a
-              key={property._id}
-              href={`/properties/${property.slug}`}
-              className="block bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 transition-all hover:-translate-y-1 hover:shadow-lg"
-            >
-              <div className="relative aspect-[3/2] overflow-hidden bg-gray-100">
-                <img
-                  src={
-                    property.thumbnail?.asset?.url
-                      ? `${property.thumbnail.asset.url}?w=600&h=400&fit=crop&auto=format`
-                      : "/floorplan-placeholder.svg"
-                  }
-                  alt={property.thumbnail?.alt || property.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover"
-                />
-                <span
-                  className={`absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-white rounded ${statusColour(property.status)}`}
-                >
-                  {statusLabel(property.status)}
-                </span>
-              </div>
-              <div className="p-4">
-                <p className="text-xl font-bold mb-1" style={{ fontFamily: "var(--font-display)" }}>
-                  {formatPrice(property.price, property.priceQualifier)}
-                </p>
-                <h3 className="text-sm font-semibold text-gray-800 mb-1 truncate">
-                  {property.title}
-                </h3>
-                <p className="text-xs text-gray-500 mb-3">
-                  {[property.town, property.postcode].filter(Boolean).join(", ")}
-                </p>
-                <div className="flex gap-4 text-xs text-gray-500 border-t border-gray-100 pt-3">
-                  {property.bedrooms != null && <span>{property.bedrooms} bed</span>}
-                  {property.bathrooms != null && <span>{property.bathrooms} bath</span>}
-                  {property.sqft != null && (
-                    <span>{property.sqft.toLocaleString("en-GB")} sq ft</span>
-                  )}
-                </div>
-              </div>
-            </a>
+      <div style={{ marginBottom: 18 }}>
+        <label style={labelStyle} htmlFor="pf-status">
+          Status
+        </label>
+        <select id="pf-status" value={status} onChange={(e) => setStatus(e.target.value)} style={fieldStyle}>
+          {statusOptions.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
           ))}
-        </div>
-      ) : (
-        <div className="text-center py-16">
-          <p className="text-gray-500 text-lg">No properties match your filters.</p>
-          <button
-            type="button"
-            onClick={() => {
-              setStatus("");
-              setTown("");
-              setType("");
-              setMinBeds("");
-              setPriceRange("");
-              setSearch("");
-            }}
-            className="mt-4 text-sm font-semibold underline"
-            style={{ color: "var(--color-brand)" }}
-          >
-            Clear all filters
-          </button>
-        </div>
-      )}
+        </select>
+      </div>
+
+      <div style={{ marginBottom: 18 }}>
+        <label style={labelStyle} htmlFor="pf-town">
+          Area
+        </label>
+        <select id="pf-town" value={town} onChange={(e) => setTown(e.target.value)} style={fieldStyle}>
+          <option value="">All Areas</option>
+          {towns.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div style={{ marginBottom: 18 }}>
+        <label style={labelStyle} htmlFor="pf-type">
+          Property Type
+        </label>
+        <select id="pf-type" value={type} onChange={(e) => setType(e.target.value)} style={fieldStyle}>
+          <option value="">All Types</option>
+          {propertyTypes.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div style={{ marginBottom: 18 }}>
+        <label style={labelStyle} htmlFor="pf-beds">
+          Bedrooms
+        </label>
+        <select id="pf-beds" value={minBeds} onChange={(e) => setMinBeds(e.target.value)} style={fieldStyle}>
+          {bedroomOptions.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div style={{ marginBottom: 24 }}>
+        <label style={labelStyle} htmlFor="pf-price">
+          Price Range
+        </label>
+        <select id="pf-price" value={priceRange} onChange={(e) => setPriceRange(e.target.value)} style={fieldStyle}>
+          {priceRanges.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <button
+        type="button"
+        onClick={clearAll}
+        style={{
+          width: "100%",
+          padding: "10px 14px",
+          background: "transparent",
+          color: palette.teal,
+          border: `1px solid ${palette.border}`,
+          borderRadius: 8,
+          fontSize: 12,
+          fontWeight: 600,
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          cursor: "pointer",
+          transition: "background-color 0.15s ease, border-color 0.15s ease",
+        }}
+      >
+        Clear Filters
+      </button>
+    </aside>
+  );
+
+  /* ----- Results header + grid ----- */
+  const resultsHeader = (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 12,
+        marginBottom: 20,
+      }}
+    >
+      <p style={{ fontSize: 14, color: palette.textSecondary, margin: 0 }}>
+        <strong style={{ color: palette.textPrimary, fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 600, fontSize: 18 }}>
+          {filtered.length}
+        </strong>{" "}
+        {filtered.length === 1 ? "property" : "properties"} found
+      </p>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <label
+          htmlFor="pf-sort"
+          style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: palette.textMuted }}
+        >
+          Sort
+        </label>
+        <select
+          id="pf-sort"
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+          style={{
+            ...fieldStyle,
+            width: 200,
+            padding: "8px 12px",
+          }}
+        >
+          {sortOptions.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  );
+
+  const resultsGrid = (
+    <div className="pf-grid">
+      {filtered.map((property) => (
+        <a
+          key={property._id}
+          href={`/properties/${property.slug}`}
+          className="pf-card"
+          style={{
+            display: "block",
+            background: palette.bg,
+            border: `1px solid ${palette.border}`,
+            borderRadius: palette.radius,
+            overflow: "hidden",
+            textDecoration: "none",
+            color: "inherit",
+            transition: "transform 0.18s ease, box-shadow 0.18s ease",
+          }}
+        >
+          <div className="pf-card-image" style={{ position: "relative", aspectRatio: "3 / 2", overflow: "hidden", background: palette.bgSoft }}>
+            <img
+              src={
+                property.thumbnail?.asset?.url
+                  ? `${property.thumbnail.asset.url}?w=600&h=400&fit=crop&auto=format`
+                  : "/floorplan-placeholder.svg"
+              }
+              alt={property.thumbnail?.alt || property.title}
+              loading="lazy"
+              className="w-full h-full object-cover"
+              style={{ display: "block" }}
+            />
+            <span
+              style={{
+                position: "absolute",
+                top: 12,
+                left: 12,
+                padding: "4px 10px",
+                fontSize: 10.5,
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                lineHeight: 1.2,
+                borderRadius: palette.radiusPill,
+                boxShadow: "0 4px 10px rgba(11, 19, 26, 0.18)",
+                color: "#fff",
+                background:
+                  property.status === "for-sale" || property.status === "under-offer" || property.status === "sold-stc"
+                    ? palette.teal
+                    : property.status === "for-rent" || property.status === "let-agreed" || property.status === "let"
+                      ? palette.bgSoft
+                      : "rgba(255,255,255,0.92)",
+                color: property.status === "for-rent" ? palette.teal : property.status === "for-sale" || property.status === "under-offer" || property.status === "sold-stc" ? "#fff" : palette.textPrimary,
+              }}
+            >
+              {statusLabel(property.status)}
+            </span>
+          </div>
+          <div style={{ padding: 16 }}>
+            <p
+              style={{
+                fontFamily: "'Playfair Display', Georgia, serif",
+                fontSize: 18,
+                fontWeight: 600,
+                color: palette.teal,
+                margin: "0 0 4px",
+                lineHeight: 1.3,
+              }}
+            >
+              {formatPrice(property.price, property.priceQualifier)}
+            </p>
+            <h3
+              style={{
+                fontSize: 14,
+                fontWeight: 600,
+                color: palette.textPrimary,
+                margin: "0 0 6px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {property.title}
+            </h3>
+            <p style={{ fontSize: 12, color: palette.textMuted, margin: "0 0 12px" }}>
+              {[property.town, property.postcode].filter(Boolean).join(", ")}
+            </p>
+            <div
+              style={{
+                display: "flex",
+                gap: 14,
+                fontSize: 12,
+                color: palette.textMuted,
+                paddingTop: 10,
+                borderTop: `1px solid ${palette.border}`,
+              }}
+            >
+              {property.bedrooms != null && <span>{property.bedrooms} bed</span>}
+              {property.bathrooms != null && <span>{property.bathrooms} bath</span>}
+              {property.sqft != null && <span>{property.sqft.toLocaleString("en-GB")} sq ft</span>}
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  );
+
+  const emptyState = (
+    <div
+      style={{
+        textAlign: "center",
+        padding: "64px 16px",
+        background: palette.bg,
+        border: `1px solid ${palette.border}`,
+        borderRadius: palette.radius,
+      }}
+    >
+      <p
+        style={{
+          fontFamily: "'Playfair Display', Georgia, serif",
+          fontSize: 22,
+          fontWeight: 600,
+          color: palette.textPrimary,
+          margin: "0 0 8px",
+        }}
+      >
+        No properties match
+      </p>
+      <p style={{ color: palette.textMuted, margin: "0 0 24px" }}>
+        Try widening your filters or clearing all of them.
+      </p>
+      <button
+        type="button"
+        onClick={clearAll}
+        style={{
+          padding: "12px 28px",
+          background: palette.teal,
+          color: "#fff",
+          border: 0,
+          borderRadius: 8,
+          fontSize: 12,
+          fontWeight: 600,
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          cursor: "pointer",
+        }}
+      >
+        Clear All Filters
+      </button>
+    </div>
+  );
+
+  return (
+    <div
+      className="pf-layout"
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr",
+        gap: 28,
+        alignItems: "start",
+      }}
+    >
+      <style>{`
+        @media (min-width: 1024px) {
+          .pf-layout {
+            grid-template-columns: 280px 1fr !important;
+          }
+          .pf-sidebar {
+            position: sticky;
+            top: 88px;
+          }
+        }
+        .pf-card:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 12px 28px rgba(15, 26, 33, 0.08);
+        }
+        .pf-card-image img {
+          transition: transform 0.35s ease;
+        }
+        .pf-card:hover .pf-card-image img {
+          transform: scale(1.04);
+        }
+        .pf-grid {
+          display: grid;
+          grid-template-columns: repeat(1, 1fr);
+          gap: 20px;
+        }
+        @media (min-width: 640px) {
+          .pf-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (min-width: 1280px) {
+          .pf-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        .pf-sidebar button:hover {
+          background: ${palette.bgSoft} !important;
+          border-color: ${palette.teal} !important;
+        }
+        .pf-sidebar select:focus,
+        .pf-sidebar input:focus {
+          outline: none;
+          border-color: ${palette.teal};
+          box-shadow: 0 0 0 3px rgba(44, 101, 105, 0.15);
+        }
+      `}</style>
+
+      {sidebar}
+
+      <div>
+        {resultsHeader}
+        {filtered.length > 0 ? resultsGrid : emptyState}
+      </div>
     </div>
   );
 }
