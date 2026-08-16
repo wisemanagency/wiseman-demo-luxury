@@ -6,6 +6,7 @@ import BookEvalBar from "@/components/BookEvalBar.astro";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel.astro";
 import SquiggleDivider from "@/components/SquiggleDivider.astro";
 import FooterCTA from "@/components/FooterCTA.astro";
+import ImageTrio from "@/components/ImageTrio.astro";
 import { sanityClient, urlFor } from "@/lib/sanity";
 import {
   featuredPropertiesQuery,
@@ -117,8 +118,6 @@ const exploreProperties = (allProperties ?? []).slice(0, 8);
     </section>
   )}
 
-  <!-- 4. Areas we cover -->
-
   <!-- 5. Areas we cover -->
   {areas?.length > 0 && (
     <section class="section">
@@ -155,7 +154,10 @@ const exploreProperties = (allProperties ?? []).slice(0, 8);
     </section>
   )}
 
-  <!-- 6. Why us — dark navy band -->
+  <!-- 6. Image trio — pause before the why-band with the luxury watermark -->
+  <ImageTrio />
+
+  <!-- 7. Why us — dark navy band -->
   <section class="section why-band">
     <div class="container">
       <div class="section-heading">

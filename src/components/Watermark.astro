@@ -1,0 +1,62 @@
+---
+/**
+ * Oversized faint serif watermark — decorative text used as a background
+ * flourish on image-heavy sections. Renders as a single positioned span
+ * so it can sit behind any layout without disrupting normal flow.
+ */
+interface Props {
+  /** Word to render (e.g. "Luxury"). Defaults to "Luxury". */
+  word?: string;
+  /** Tint color (any CSS color). Defaults to gold. */
+  color?: string;
+  /** Override opacity (0-1). Defaults to 0.08. */
+  opacity?: number;
+  /** Custom class to anchor the positioning (e.g. section-band). */
+  class?: string;
+  /** When true, italicises the text. Defaults to true. */
+  italic?: boolean;
+}
+
+const {
+  word = "Luxury",
+  color = "var(--color-luxury-gold)",
+  opacity = 0.08,
+  class: className,
+  italic = true,
+} = Astro.props;
+---
+
+<span
+  class={`watermark ${className ?? ""}`}
+  aria-hidden="true"
+  style={`color: ${color}; opacity: ${opacity}; font-style: ${italic ? "italic" : "normal"};`}
+>
+  {word}
+</span>
+
+<style>
+  .watermark {
+    position: absolute;
+    right: -20px;
+    bottom: -40px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(140px, 22vw, 320px);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+    white-space: nowrap;
+  }
+  /* When the parent is a small container the user can place it via class */
+  .watermark.watermark-center {
+    left: 50%;
+    right: auto;
+    bottom: 50%;
+    transform: translate(-50%, 50%);
+  }
+  .watermark.watermark-top {
+    top: 0;
+    bottom: auto;
+  }
+</style>

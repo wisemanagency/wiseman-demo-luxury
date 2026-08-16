@@ -1,0 +1,86 @@
+---
+/**
+ * Image trio — three side-by-side images spread across the container
+ * width, with an oversized faint serif "Luxury" watermark behind them.
+ * Used on the About page as a visual break between the story and the
+ * stats band, and on the Home page as a pause between the explore grid
+ * and the areas sections.
+ */
+import Watermark from "@/components/Watermark.astro";
+
+interface Props {
+  images?: { src: string; alt: string }[];
+  /** Watermark word (defaults to "Luxury"). Pass "" to hide. */
+  watermark?: string;
+}
+
+const {
+  images = [
+    { src: "/home-image-1.webp", alt: "Sampletown street scene" },
+    { src: "/estate-demo-hero.webp", alt: "Featured property hero shot" },
+    { src: "/estate-office-outdoor.webp", alt: "Our branch on the high street" },
+  ],
+  watermark = "Luxury",
+} = Astro.props;
+---
+
+<section class="image-trio section">
+  <div class="container image-trio-wrap">
+    {watermark && <Watermark word={watermark} />}
+
+    <div class="image-trio-grid">
+      {images.map((img) => (
+        <div class="image-trio-frame">
+          <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .image-trio-wrap {
+    position: relative;
+    overflow: hidden;
+  }
+  .image-trio-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 640px) {
+    .image-trio-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+  }
+  .image-trio-frame {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    box-shadow: 0 18px 40px -12px rgba(15, 26, 33, 0.25);
+    background: var(--color-brand-navy);
+  }
+  .image-trio-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+  .image-trio-frame:hover img {
+    transform: scale(1.04);
+  }
+  /* The middle image is slightly taller for variety */
+  .image-trio-frame:nth-child(2) {
+    aspect-ratio: 4 / 6;
+  }
+  @media (max-width: 639px) {
+    .image-trio-frame:nth-child(2) {
+      aspect-ratio: 4 / 5;
+    }
+  }
+</style>
