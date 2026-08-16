@@ -986,21 +986,21 @@ body.nav-open {
 }
 
 /* =========================================================================
-   Hero — split layout (copy panel left, photo right) with a floating
-   rectangular Sales/Rentals search card straddling the photo seam and
-   overhanging the hero / next-section boundary. The grid itself sits
-   inside the shared `--container-max` so the copy panel's left edge
-   aligns to the logo / nav / footer at every viewport; the photo
-   column bleeds past the right edge of the container into the viewport
-   via a negative margin so the image still extends to the viewport edge.
+   Hero — full-width powder-teal background with a 2-column container
+   grid (copy left, photo right) and a floating Sales/Rentals search
+   card straddling the photo seam and overhanging the hero / next-
+   section boundary. The teal panel spans the entire viewport edge-to-
+   edge; the grid + photo live inside `--container-max` so the copy
+   text aligns to the logo / nav / footer at every viewport, and the
+   photo sits INSIDE the right half of the container (not bleeding) so
+   the teal background shows as a frame around it on wider viewports.
    ========================================================================= */
 .hero {
   position: relative;
-  /* Intentionally no background colour here. The photo column carries its
-     own navy fallback (see .hero-image) so a missing image still looks
-     intentional; painting the whole section navy bleeds into the area
-     where the floating search card lives and produces an unintended
-     full-width strip directly below the hero. */
+  /* Powder-teal panel across the full viewport width — this is the
+     "background" that frames the hero. The photo sits inset over
+     this background, not bleeding past it. */
+  background: var(--color-luxury-bg-soft);
   color: #fff;
   overflow: visible;
 }
@@ -1008,9 +1008,10 @@ body.nav-open {
 /* Two-column grid: copy panel (left) + photo (right). The grid is
    constrained to `--container-max` so its left edge matches the rest
    of the page (logo, nav, footer, listings CTA). At >=1024px the
-   photo column overflows right via a negative margin so the image
-   still reaches the viewport edge while the copy column stays aligned
-   to the container's content edge. */
+   photo column sits inside the right half of the container — it does
+   NOT bleed past the grid edge, so the teal background frames the
+   photo on wider viewports (a deliberate "card on a coloured field"
+   composition matching the reference). */
 .hero-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -1026,18 +1027,18 @@ body.nav-open {
   }
 }
 
-/* Left copy panel — sits inside .hero-grid (constrained to
-   --container-max). At >=1024px the column is exactly half the
-   container (740px when container is 1480), so the desktop padding
-   uses a flat 40px to align with `.container`'s content edge. Above
-   .hero-grid's max-width the copy column already lines up because
-   both share the same container constraint. */
+/* Left copy panel — sits inside .hero-grid. Padding-left uses 40px on
+   desktop (matching `.container`'s content edge) so the heading,
+   buttons, and search card all align to the logo / nav / footer x at
+   every viewport. The panel itself is transparent — the powder-teal
+   colour comes from .hero's background, so the panel never paints a
+   competing half-width block over the photo side. */
 .hero-copy {
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 56px 20px 64px;
-  background: var(--color-luxury-bg-soft);
+  background: transparent;
   color: var(--color-text-primary);
 }
 @media (min-width: 768px) {
@@ -1108,21 +1109,24 @@ body.nav-open {
   color: var(--color-brand-cyan);
 }
 
-/* Right photo — uses an <img> so it scales for srcset later. The grid
-   is constrained to --container-max and centered via margin-inline:
-   auto, so the photo column only fills the right half of the grid
-   (~740px on desktop). We bleed it to the viewport right edge with
-   a negative margin-right equal to the gap between the grid's right
-   edge and the viewport's right edge: `(100vw - var(--container-max)) / 2`. */
+/* Right photo — uses an <img> so it scales for srcset later. The photo
+   sits INSIDE the right half of the constrained grid (it does NOT
+   bleed past the grid right edge). On desktop the column is ~740px
+   wide; on mobile it stacks below the copy at full container width.
+   The hero's powder-teal background shows as a frame around the photo
+   on wider viewports — matching the reference layout. */
 .hero-image {
   position: relative;
   min-height: 320px;
   overflow: hidden;
   background: var(--color-brand-navy);
+  /* Small inner radius so the photo reads as a framed element on the
+     teal background (not a hard rectangle). */
+  border-radius: 0;
 }
 @media (min-width: 1024px) {
   .hero-image {
-    margin-right: calc(-1 * (100vw - var(--container-max)) / 2);
+    border-radius: 8px;
   }
 }
 .hero-image img {
@@ -1257,21 +1261,22 @@ body.nav-open {
   }
 }
 
-/* Sales / Rentals tabs — compact rectangular tabs along the top-left edge
-   of the card (left-aligned, sized to text content; the row does NOT
-   stretch the tabs full-width of the card). Inactive tabs sit plain
-   (transparent background, dark text). The active tab is filled with
-   the brand-cyan token and rendered in white. Border-radius is 0 so
-   the tabs read as flat rectangles, not rounded pills. */
+/* Sales / Rentals tabs — the WHOLE TOP ROW of the card is teal-tinted,
+   spanning the full width of the search card. The two tabs sit inside
+   that band as rectangular slots: the active tab is filled with solid
+   brand-cyan (white text), the inactive tab sits on the lighter teal
+   panel and reads as "the background" rather than a separate button.
+   This is the "one filled, one clear" pattern from the reference —
+   not two compact pills floating in white space. */
 .hero-search-tabs {
-  display: flex;
-  gap: 8px;
-  padding: 14px 14px 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: rgba(44, 101, 105, 0.18);
   border-bottom: 1px solid var(--color-border-subtle);
-  background: transparent;
+  padding: 0;
 }
 .hero-search-tab {
-  padding: 8px 14px;
+  padding: 14px 20px;
   background: transparent;
   border: 0;
   border-radius: 0;
@@ -1280,13 +1285,15 @@ body.nav-open {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
   cursor: pointer;
+  text-align: center;
   transition:
     color 0.15s ease,
     background-color 0.15s ease;
 }
-.hero-search-tab:hover {
+.hero-search-tab:hover:not(.is-active) {
+  background: rgba(44, 101, 105, 0.08);
   color: var(--color-brand-cyan);
 }
 .hero-search-tab.is-active {
