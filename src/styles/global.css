@@ -986,9 +986,13 @@ body.nav-open {
 }
 
 /* =========================================================================
-   Hero — split layout (copy panel left, photo right) inside the shared
-   --container-max, with a floating flat-text Sales/Rentals search card
-   straddling the seam and overhanging the hero / next-section boundary.
+   Hero — split layout (copy panel left, photo right) with a floating
+   rectangular Sales/Rentals search card straddling the photo seam and
+   overhanging the hero / next-section boundary. The grid itself sits
+   inside the shared `--container-max` so the copy panel's left edge
+   aligns to the logo / nav / footer at every viewport; the photo
+   column bleeds past the right edge of the container into the viewport
+   via a negative margin so the image still extends to the viewport edge.
    ========================================================================= */
 .hero {
   position: relative;
@@ -1001,53 +1005,49 @@ body.nav-open {
   overflow: visible;
 }
 
-/* Two-column grid: copy panel (left) + photo (right). The grid sits inside
-   the shared --container-max so the heading, photo, and search card all
-   align to the same x as the logo, nav, and rest of the page. */
+/* Two-column grid: copy panel (left) + photo (right). The grid is
+   constrained to `--container-max` so its left edge matches the rest
+   of the page (logo, nav, footer, listings CTA). At >=1024px the
+   photo column overflows right via a negative margin so the image
+   still reaches the viewport edge while the copy column stays aligned
+   to the container's content edge. */
 .hero-grid {
   display: grid;
   grid-template-columns: 1fr;
   align-items: stretch;
-  min-height: 520px;
-  max-width: 100%;
+  min-height: 580px;
+  max-width: var(--container-max);
   margin-inline: auto;
-  padding-inline: 20px;
-}
-@media (min-width: 768px) {
-  .hero-grid {
-    padding-inline: 40px;
-  }
 }
 @media (min-width: 1024px) {
   .hero-grid {
     grid-template-columns: 1fr 1fr;
-    min-height: 620px;
-    max-width: var(--container-max);
+    min-height: 720px;
   }
 }
 
-/* Left copy panel — the grid's padding-inline already supplies the left
-   gutter (so the text sits at the same x as the logo), so we only set
-   right padding here, plus the vertical padding for breathing room. */
+/* Left copy panel — sits inside .hero-grid (constrained to
+   --container-max). At >=1024px the column is exactly half the
+   container (740px when container is 1480), so the desktop padding
+   uses a flat 40px to align with `.container`'s content edge. Above
+   .hero-grid's max-width the copy column already lines up because
+   both share the same container constraint. */
 .hero-copy {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 56px 0 64px;
+  padding: 56px 20px 64px;
   background: var(--color-luxury-bg-soft);
   color: var(--color-text-primary);
 }
 @media (min-width: 768px) {
   .hero-copy {
-    padding: 80px 56px 80px 0;
+    padding: 80px 56px 80px 40px;
   }
 }
 @media (min-width: 1024px) {
   .hero-copy {
-    /* Generous right padding so the heading doesn't crowd the photo column
-       seam; left padding is 0 because the grid already aligns it to the
-       container padding edge. */
-    padding: 80px 64px 80px 0;
+    padding: 80px 64px 80px 40px;
   }
 }
 
@@ -1108,14 +1108,22 @@ body.nav-open {
   color: var(--color-brand-cyan);
 }
 
-/* Right photo — uses an <img> so it scales for srcset later. We let it
-   bleed to the right edge of the viewport by negating the right padding
-   of the container. */
+/* Right photo — uses an <img> so it scales for srcset later. The grid
+   is constrained to --container-max and centered via margin-inline:
+   auto, so the photo column only fills the right half of the grid
+   (~740px on desktop). We bleed it to the viewport right edge with
+   a negative margin-right equal to the gap between the grid's right
+   edge and the viewport's right edge: `(100vw - var(--container-max)) / 2`. */
 .hero-image {
   position: relative;
   min-height: 320px;
   overflow: hidden;
   background: var(--color-brand-navy);
+}
+@media (min-width: 1024px) {
+  .hero-image {
+    margin-right: calc(-1 * (100vw - var(--container-max)) / 2);
+  }
 }
 .hero-image img {
   display: block;
@@ -1181,25 +1189,25 @@ body.nav-open {
   color: var(--color-luxury-gold);
 }
 
-/* Floating search card — left-anchored, straddles the hero/photo seam on
-   desktop, stacks normally below the hero on tablet/mobile. The card
-   carries its own shadow and border; the inner .search-bar drops its
-   own shadow so we don't get a double-stack. The container shares the
-   shared --container-max so the card's left edge lines up with the logo
-   and hero-copy text. */
+/* Floating search card — constrained to the same --container-max so the
+   card's left edge sits at the same x as the logo / hero-copy text at
+   every viewport. At >=1024px the container has a symmetric overhang
+   via negative margins so the card visibly extends past the
+   hero/next-section boundary AND past the hero/photo seam (the card
+   itself caps at 760px and uses justify-content: flex-start so it
+   sticks to the container's left edge inside the wider container). */
 .hero-search-container {
   position: relative;
   z-index: 5;
-  max-width: 100%;
-  margin-inline: auto;
   padding: 20px;
   display: flex;
   justify-content: flex-start;
+  max-width: var(--container-max);
+  margin-inline: auto;
 }
 @media (min-width: 768px) {
   .hero-search-container {
-    max-width: var(--container-max);
-    padding-inline: 40px;
+    padding: 20px 40px;
   }
 }
 @media (min-width: 1024px) {
@@ -1211,6 +1219,7 @@ body.nav-open {
   .hero-search-container {
     margin-top: -56px;
     margin-bottom: -72px;
+    padding: 20px 40px 20px 40px;
   }
 }
 @media (max-width: 1023.98px) {
@@ -1248,41 +1257,41 @@ body.nav-open {
   }
 }
 
-/* Sales / Rentals tabs — plain text labels along the top edge of the
-   card. No pill/button chrome; the active tab is indicated by brand-cyan
-   colour, bolder weight, and a thicker bottom border that visually
-   replaces the inactive separator. The row itself is transparent so the
-   card's white surface reads as a single element. */
+/* Sales / Rentals tabs — compact rectangular tabs along the top-left edge
+   of the card (left-aligned, sized to text content; the row does NOT
+   stretch the tabs full-width of the card). Inactive tabs sit plain
+   (transparent background, dark text). The active tab is filled with
+   the brand-cyan token and rendered in white. Border-radius is 0 so
+   the tabs read as flat rectangles, not rounded pills. */
 .hero-search-tabs {
   display: flex;
-  gap: 28px;
-  padding: 18px 24px 0;
+  gap: 8px;
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid var(--color-border-subtle);
   background: transparent;
 }
 .hero-search-tab {
-  padding: 4px 0 13px;
+  padding: 8px 14px;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid var(--color-border-subtle);
+  border-radius: 0;
   font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-text-secondary);
   cursor: pointer;
   transition:
     color 0.15s ease,
-    border-color 0.15s ease;
+    background-color 0.15s ease;
 }
 .hero-search-tab:hover {
   color: var(--color-brand-cyan);
 }
 .hero-search-tab.is-active {
-  color: var(--color-brand-cyan);
-  font-weight: 600;
-  border-bottom: 2px solid var(--color-brand-cyan);
-  padding-bottom: 12px;
+  background: var(--color-brand-cyan);
+  color: #ffffff;
 }
 
 /* Drop the inner .search-bar's own shadow + radius when it's hosted by
