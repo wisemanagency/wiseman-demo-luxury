@@ -663,18 +663,19 @@ body.nav-open {
 
 /* ----- Footer ----- */
 .site-footer {
-  background: var(--color-brand-navy);
-  color: #fff;
+  background: var(--color-surface-page);
+  color: var(--color-text-primary);
+  border-top: 1px solid rgba(27, 39, 51, 0.06);
 }
 .site-footer a {
-  color: #fff;
+  color: var(--color-text-primary);
   text-decoration: none;
 }
 .site-footer a:hover {
-  opacity: 0.85;
+  color: var(--color-brand-cyan);
 }
 .site-footer h4 {
-  color: #fff;
+  color: var(--color-text-primary);
   font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
@@ -694,17 +695,17 @@ body.nav-open {
   font-weight: 700;
 }
 .site-footer .footer-bottom {
-  background: var(--color-brand-navy-dark);
+  background: var(--color-luxury-bg-soft);
   padding: 20px 0;
   text-align: center;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text-secondary);
 }
 .site-footer .footer-bottom .wordmark {
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 16px;
-  color: #fff;
+  color: var(--color-brand-navy);
   margin-bottom: 4px;
 }
 
@@ -2084,7 +2085,7 @@ body.nav-open {
   }
 }
 .site-footer h4 {
-  color: #fff;
+  color: var(--color-text-primary);
   font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
@@ -2108,11 +2109,11 @@ body.nav-open {
   line-height: 1.5;
 }
 .site-footer .footer-link a {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--color-text-secondary);
   text-decoration: none;
 }
 .site-footer .footer-link a:hover {
-  color: #fff;
+  color: var(--color-brand-cyan);
 }
 .site-footer .footer-link::before {
   content: "›";
@@ -2127,7 +2128,7 @@ body.nav-open {
   align-items: flex-start;
   gap: 10px;
   padding: 5px 0;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--color-text-secondary);
   font-size: 14px;
   line-height: 1.5;
 }
@@ -2141,19 +2142,19 @@ body.nav-open {
   justify-content: center;
   gap: 16px;
   padding: 24px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(27, 39, 51, 0.06);
 }
 .footer-socials a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary);
   text-decoration: none;
   font-size: 13px;
   font-weight: 500;
 }
 .footer-socials a:hover {
-  color: #fff;
+  color: var(--color-brand-cyan);
 }
 
 /* =========================================================================
