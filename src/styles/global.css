@@ -1580,12 +1580,33 @@ body.nav-open {
   line-height: 1.6;
 }
 
-/* ---- Rich CTA strip — split layout (photo + checklist + trust) ---- */
+/* ---- Rich CTA strip — powder teal band, serif heading ---- */
 .cta-strip.cta-strip-rich {
   text-align: left;
-  background: linear-gradient(135deg, #ffffff 0%, #e6f2fa 100%);
+  background: var(--color-luxury-bg-soft);
+  position: relative;
+  overflow: hidden;
+}
+/* Faint oversized serif "LUXURY" watermark behind the copy — decorative
+   only, lives far behind the text so it never competes for attention. */
+.cta-strip.cta-strip-rich::before {
+  content: "Luxury";
+  position: absolute;
+  right: -20px;
+  bottom: -60px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(140px, 22vw, 320px);
+  line-height: 1;
+  color: rgba(201, 162, 39, 0.08);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
 }
 .cta-strip-grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
   gap: 32px;
@@ -1615,23 +1636,25 @@ body.nav-open {
   display: inline-block;
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-brand-cyan);
-  background: rgba(45, 145, 199, 0.1);
-  padding: 6px 12px;
-  border-radius: 999px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 .cta-strip-copy h2 {
-  margin: 0 0 12px;
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
 }
 .cta-strip-sub {
   font-size: 16px;
   line-height: 1.65;
   color: var(--color-text-secondary);
   max-width: 540px;
-  margin: 0 0 24px;
+  margin: 0 0 26px;
 }
 .cta-checklist {
   list-style: none;
@@ -1659,18 +1682,20 @@ body.nav-open {
   width: 18px;
   height: 18px;
   color: var(--color-brand-cyan);
-  background: rgba(45, 145, 199, 0.12);
+  background: rgba(220, 234, 234, 0.7);
   padding: 4px;
   border-radius: 50%;
   box-sizing: content-box;
 }
 .cta-strip-btn {
   padding: 14px 32px;
-  font-size: 16px;
-  box-shadow: 0 8px 20px -6px rgba(45, 145, 199, 0.55);
+  font-size: 14px;
+  background: var(--color-brand-cyan);
+  box-shadow: 0 8px 20px -6px rgba(44, 101, 105, 0.45);
 }
 .cta-strip-btn:hover {
-  box-shadow: 0 12px 28px -8px rgba(45, 145, 199, 0.65);
+  background: var(--color-brand-cyan-dark);
+  box-shadow: 0 12px 28px -8px rgba(44, 101, 105, 0.55);
 }
 .cta-trust {
   margin-top: 18px;
