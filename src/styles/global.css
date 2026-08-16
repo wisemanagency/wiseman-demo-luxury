@@ -13,11 +13,11 @@
 
 @theme {
   /* Brand — dark teal primary + gold accent on a near-black slate */
-  --color-brand-navy: #1b2733;        /* deep slate (heading colour, dark bg) */
-  --color-brand-navy-dark: #0f1a21;   /* deeper slate (hover/bottom bar) */
-  --color-brand-cyan: #2c6569;        /* dark teal primary (CTAs, links) */
-  --color-brand-cyan-dark: #1f4e51;   /* teal hover */
-  --color-brand-orange: #c9a227;      /* gold accent (logo mark, stars) */
+  --color-brand-navy: #1b2733; /* deep slate (heading colour, dark bg) */
+  --color-brand-navy-dark: #0f1a21; /* deeper slate (hover/bottom bar) */
+  --color-brand-cyan: #2c6569; /* dark teal primary (CTAs, links) */
+  --color-brand-cyan-dark: #1f4e51; /* teal hover */
+  --color-brand-orange: #c9a227; /* gold accent (logo mark, stars) */
   --color-brand-orange-dark: #a88419; /* gold hover */
 
   /* Status — Featured stays green; Sales/Rent swap to teal + gold */
@@ -40,9 +40,9 @@
 
   /* Luxury-specific tokens (new for the luxury vertical) */
   --color-luxury-bg: #ffffff;
-  --color-luxury-bg-soft: #dceaea;   /* footer CTA band — powder teal */
-  --color-luxury-teal: #2c6569;      /* Send/Search/Contact Us buttons */
-  --color-luxury-gold: #c9a227;      /* logo mark, active nav, stars */
+  --color-luxury-bg-soft: #dceaea; /* footer CTA band — powder teal */
+  --color-luxury-teal: #2c6569; /* Send/Search/Contact Us buttons */
+  --color-luxury-gold: #c9a227; /* logo mark, active nav, stars */
   --color-luxury-gold-dark: #a88419;
 
   /* Typography — Poppins stays for body/nav/card titles; serif display added */
@@ -1066,7 +1066,9 @@ body.nav-open {
   box-shadow: 0 14px 40px rgba(11, 19, 26, 0.35);
   backdrop-filter: blur(4px);
   max-width: 360px;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
 }
 .hero-featured:hover {
   transform: translateY(-2px);

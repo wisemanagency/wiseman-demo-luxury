@@ -112,7 +112,7 @@ export default function PropertyFilter({ properties, towns, propertyTypes }: Pro
         (p) =>
           p.title.toLowerCase().includes(q) ||
           p.town?.toLowerCase().includes(q) ||
-          p.postcode?.toLowerCase().includes(q),
+          p.postcode?.toLowerCase().includes(q)
       );
     }
     if (status) result = result.filter((p) => p.status === status);
@@ -265,7 +265,12 @@ export default function PropertyFilter({ properties, towns, propertyTypes }: Pro
         <label style={labelStyle} htmlFor="pf-status">
           Status
         </label>
-        <select id="pf-status" value={status} onChange={(e) => setStatus(e.target.value)} style={fieldStyle}>
+        <select
+          id="pf-status"
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+          style={fieldStyle}
+        >
           {statusOptions.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
@@ -278,7 +283,12 @@ export default function PropertyFilter({ properties, towns, propertyTypes }: Pro
         <label style={labelStyle} htmlFor="pf-town">
           Area
         </label>
-        <select id="pf-town" value={town} onChange={(e) => setTown(e.target.value)} style={fieldStyle}>
+        <select
+          id="pf-town"
+          value={town}
+          onChange={(e) => setTown(e.target.value)}
+          style={fieldStyle}
+        >
           <option value="">All Areas</option>
           {towns.map((t) => (
             <option key={t} value={t}>
@@ -292,7 +302,12 @@ export default function PropertyFilter({ properties, towns, propertyTypes }: Pro
         <label style={labelStyle} htmlFor="pf-type">
           Property Type
         </label>
-        <select id="pf-type" value={type} onChange={(e) => setType(e.target.value)} style={fieldStyle}>
+        <select
+          id="pf-type"
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          style={fieldStyle}
+        >
           <option value="">All Types</option>
           {propertyTypes.map((t) => (
             <option key={t} value={t}>
@@ -306,7 +321,12 @@ export default function PropertyFilter({ properties, towns, propertyTypes }: Pro
         <label style={labelStyle} htmlFor="pf-beds">
           Bedrooms
         </label>
-        <select id="pf-beds" value={minBeds} onChange={(e) => setMinBeds(e.target.value)} style={fieldStyle}>
+        <select
+          id="pf-beds"
+          value={minBeds}
+          onChange={(e) => setMinBeds(e.target.value)}
+          style={fieldStyle}
+        >
           {bedroomOptions.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
@@ -319,7 +339,12 @@ export default function PropertyFilter({ properties, towns, propertyTypes }: Pro
         <label style={labelStyle} htmlFor="pf-price">
           Price Range
         </label>
-        <select id="pf-price" value={priceRange} onChange={(e) => setPriceRange(e.target.value)} style={fieldStyle}>
+        <select
+          id="pf-price"
+          value={priceRange}
+          onChange={(e) => setPriceRange(e.target.value)}
+          style={fieldStyle}
+        >
           {priceRanges.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
@@ -364,7 +389,14 @@ export default function PropertyFilter({ properties, towns, propertyTypes }: Pro
       }}
     >
       <p style={{ fontSize: 14, color: palette.textSecondary, margin: 0 }}>
-        <strong style={{ color: palette.textPrimary, fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 600, fontSize: 18 }}>
+        <strong
+          style={{
+            color: palette.textPrimary,
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontWeight: 600,
+            fontSize: 18,
+          }}
+        >
           {filtered.length}
         </strong>{" "}
         {filtered.length === 1 ? "property" : "properties"} found
@@ -372,7 +404,13 @@ export default function PropertyFilter({ properties, towns, propertyTypes }: Pro
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <label
           htmlFor="pf-sort"
-          style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: palette.textMuted }}
+          style={{
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            color: palette.textMuted,
+          }}
         >
           Sort
         </label>
@@ -414,7 +452,15 @@ export default function PropertyFilter({ properties, towns, propertyTypes }: Pro
             transition: "transform 0.18s ease, box-shadow 0.18s ease",
           }}
         >
-          <div className="pf-card-image" style={{ position: "relative", aspectRatio: "3 / 2", overflow: "hidden", background: palette.bgSoft }}>
+          <div
+            className="pf-card-image"
+            style={{
+              position: "relative",
+              aspectRatio: "3 / 2",
+              overflow: "hidden",
+              background: palette.bgSoft,
+            }}
+          >
             <img
               src={
                 property.thumbnail?.asset?.url
@@ -439,14 +485,24 @@ export default function PropertyFilter({ properties, towns, propertyTypes }: Pro
                 lineHeight: 1.2,
                 borderRadius: palette.radiusPill,
                 boxShadow: "0 4px 10px rgba(11, 19, 26, 0.18)",
-                color: "#fff",
                 background:
-                  property.status === "for-sale" || property.status === "under-offer" || property.status === "sold-stc"
+                  property.status === "for-sale" ||
+                  property.status === "under-offer" ||
+                  property.status === "sold-stc"
                     ? palette.teal
-                    : property.status === "for-rent" || property.status === "let-agreed" || property.status === "let"
+                    : property.status === "for-rent" ||
+                        property.status === "let-agreed" ||
+                        property.status === "let"
                       ? palette.bgSoft
                       : "rgba(255,255,255,0.92)",
-                color: property.status === "for-rent" ? palette.teal : property.status === "for-sale" || property.status === "under-offer" || property.status === "sold-stc" ? "#fff" : palette.textPrimary,
+                color:
+                  property.status === "for-rent"
+                    ? palette.teal
+                    : property.status === "for-sale" ||
+                        property.status === "under-offer" ||
+                        property.status === "sold-stc"
+                      ? "#fff"
+                      : palette.textPrimary,
               }}
             >
               {statusLabel(property.status)}
