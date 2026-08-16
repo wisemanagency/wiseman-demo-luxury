@@ -61,10 +61,32 @@ const heroImg = backgroundImage || "/estate-demo-hero.webp";
     </div>
   </div>
 
-  <!-- Floating search widget straddling the seam between the two columns -->
+  <!-- Floating search card — left-anchored, straddling the hero seam on
+       desktop; stacks normally below the hero copy on tablet/mobile. -->
   <div class="hero-search-container">
-    <div class="container">
-      <form action="/properties" method="get" class="search-bar search-bar-luxury">
+    <div class="hero-search-card">
+      <div class="hero-search-tabs" role="tablist" aria-label="Property status">
+        <button
+          type="button"
+          class="hero-search-tab is-active"
+          data-status="for-sale"
+          role="tab"
+          aria-selected="true"
+        >
+          Sales
+        </button>
+        <button
+          type="button"
+          class="hero-search-tab"
+          data-status="for-rent"
+          role="tab"
+          aria-selected="false"
+        >
+          Rentals
+        </button>
+      </div>
+      <form action="/properties" method="get" class="search-bar">
+        <input type="hidden" name="status" value="for-sale" data-status-input />
         <input
           type="text"
           name="q"
@@ -72,11 +94,6 @@ const heroImg = backgroundImage || "/estate-demo-hero.webp";
           placeholder="Enter location, postcode or keyword…"
           style="background-image: none; text-align: left;"
         />
-        <select name="status" class="sb-cell" aria-label="Status">
-          <option value="">Any Status</option>
-          <option value="for-sale">For Sale</option>
-          <option value="for-rent">To Let</option>
-        </select>
         <select name="bedrooms" class="sb-cell" aria-label="Bedrooms">
           <option value="">Any Beds</option>
           <option value="1">1+</option>
@@ -102,4 +119,24 @@ const heroImg = backgroundImage || "/estate-demo-hero.webp";
       </form>
     </div>
   </div>
+
+  <script is:inline>
+    // Sync the active pill -> the hidden status input + ARIA selected state.
+    (() => {
+      const tabs = document.querySelectorAll(".hero-search-tab");
+      const input = document.querySelector("[data-status-input]");
+      if (!tabs.length || !input) return;
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          tabs.forEach((t) => {
+            t.classList.remove("is-active");
+            t.setAttribute("aria-selected", "false");
+          });
+          tab.classList.add("is-active");
+          tab.setAttribute("aria-selected", "true");
+          input.value = tab.getAttribute("data-status") || "for-sale";
+        });
+      });
+    })();
+  </script>
 </section>

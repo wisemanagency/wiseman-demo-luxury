@@ -1012,7 +1012,11 @@ body.nav-open {
   }
 }
 
-/* Left copy panel — warm off-white, generous side padding, vertical centre */
+/* Left copy panel — flush to the container's left padding edge, generous
+   right padding, vertical centre. We deliberately drop the previous
+   `calc((100vw - container-max) / 2 + …)` formula so the heading and
+   sub-headline start at the same edge as the rest of the page content
+   (logo, nav, hero search card). */
 .hero-copy {
   display: flex;
   flex-direction: column;
@@ -1023,12 +1027,16 @@ body.nav-open {
 }
 @media (min-width: 768px) {
   .hero-copy {
-    padding: 80px 56px;
+    padding: 80px 56px 80px 40px;
   }
 }
 @media (min-width: 1024px) {
   .hero-copy {
-    padding: 80px 64px 80px max(40px, calc((100vw - var(--container-max)) / 2 + 40px));
+    /* On desktop the photo column takes the right half of the container.
+       The copy panel is the left half; its left edge sits at the
+       container padding edge (40px) and its right edge sits at the
+       seam (50% of the container content area). */
+    padding: 80px 64px 80px 40px;
   }
 }
 
@@ -1162,36 +1170,112 @@ body.nav-open {
   color: var(--color-luxury-gold);
 }
 
-/* Floating search widget — sits below the split, overlapping the seam */
+/* Floating search card — left-anchored, straddles the hero/photo seam on
+   desktop, stacks normally below the hero on tablet/mobile. The card
+   carries its own shadow and border; the inner .search-bar drops its
+   own shadow so we don't get a double-stack. */
 .hero-search-container {
   position: relative;
-  margin-top: -32px;
   z-index: 5;
-  padding-inline: 20px;
+  padding: 20px;
+  display: flex;
+  justify-content: flex-start;
 }
 @media (min-width: 768px) {
   .hero-search-container {
-    margin-top: -40px;
-    padding-inline: 40px;
+    padding: 0 40px;
   }
 }
 @media (min-width: 1024px) {
+  /* Pull the card up so it overlaps the boundary between the copy
+     panel and the photo. */
   .hero-search-container {
     margin-top: -56px;
   }
 }
+@media (max-width: 1023.98px) {
+  /* Below desktop, the card sits in normal flow below the hero text —
+     no overlap/float, no awkward negative margin on narrow viewports. */
+  .hero-search-container {
+    margin-top: 32px;
+  }
+}
 
-/* Tweak the shared .search-bar so the luxury variant sits as a single
-   visible floating pill (no internal border shadows that fight the page). */
-.search-bar.search-bar-luxury {
+.hero-search-card {
+  width: 100%;
+  max-width: 720px;
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
   box-shadow:
     0 24px 60px rgba(11, 19, 26, 0.18),
     0 8px 18px rgba(11, 19, 26, 0.08);
-  border-radius: 6px;
+  overflow: hidden;
+}
+@media (min-width: 1024px) {
+  /* 50% of the container content area (= 700px at 1480 container)
+     plus 80px of overlap past the seam — so the card visibly straddles.
+     Scales linearly with the container so the straddle amount stays
+     consistent across viewports. */
+  .hero-search-card {
+    max-width: calc(50% + 80px);
+  }
+}
+@media (min-width: 1280px) {
+  /* Cap at 760px on wider viewports so the card doesn't sprawl. */
+  .hero-search-card {
+    max-width: 760px;
+  }
+}
+
+/* Sales / Rentals pill switcher — sits across the top of the card. */
+.hero-search-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-alt);
+}
+.hero-search-tab {
+  flex: 1;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+.hero-search-tab:hover {
+  border-color: var(--color-brand-cyan);
+  color: var(--color-brand-cyan);
+}
+.hero-search-tab.is-active {
+  background: var(--color-brand-cyan);
+  color: #ffffff;
+  border-color: var(--color-brand-cyan);
+}
+
+/* Drop the inner .search-bar's own shadow + radius when it's hosted by
+   the hero card — the card itself carries the elevation. */
+.hero-search-card .search-bar {
+  box-shadow: none;
+  border-radius: 0;
+}
+.hero-search-card .search-bar > .sb-cell {
+  background-color: #ffffff;
 }
 
 /* Section immediately after the hero no longer needs the overhanging-search
-   padding because the search bar is now anchored inside the hero bounds. */
+   padding because the search card is now anchored inside the hero bounds. */
 .hero + .section {
   padding-top: 64px;
 }
