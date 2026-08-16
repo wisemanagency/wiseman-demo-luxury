@@ -1197,23 +1197,26 @@ body.nav-open {
     padding: 20px 40px;
   }
 }
-@media (min-width: 1024px) {
-  /* Pull the card up so it overlaps the boundary between the copy
-     panel and the photo. An asymmetric negative margin-bottom (larger
-     than the top) makes the card visibly extend past the
-     hero/next-section boundary so it physically straddles that seam
-     too — the card overhangs well into the next section so it reads
-     as a floating bar between the hero and the page below. The top
-     portion of the card still sits inside the hero, the bottom
-     portion extends into the next section. */
+@media (min-width: 768px) {
+  /* Position the search container absolutely so it can physically
+     extend below the hero. The container is anchored to the bottom
+     of the hero, then `bottom: -100px` pulls the card's bottom 100px
+     past the hero's bottom edge. The card's tabs row sits at the top
+     of the card, with the seam passing through the lower portion of
+     the card body — the tabs row is still inside the hero, the
+     bottom of the card extends into the next section. */
   .hero-search-container {
-    margin-top: -56px;
-    margin-bottom: -160px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -70px;
+    margin-top: 0;
+    margin-bottom: 0;
     padding: 20px 40px 20px 40px;
   }
 }
-@media (max-width: 1023.98px) {
-  /* Below desktop, the card sits in normal flow below the hero text —
+@media (max-width: 767.98px) {
+  /* On phones, the card sits in normal flow below the hero text —
      no overlap/float, no awkward negative margin on narrow viewports. */
   .hero-search-container {
     margin-top: 32px;
@@ -1336,20 +1339,15 @@ body.nav-open {
 
 /* Section immediately after the hero — padding-top accounts for the
    search card's overhang past the hero/next-section boundary. The
-   card has margin-bottom: -160px on the search container at desktop
-   so it floats well into the next section. Below desktop the card
-   sits in normal flow with no overhang, so the section needs less
-   top padding. Specific sections (e.g. .listings-cta) override these
-   defaults with their own padding-top rules. */
+   card is absolutely positioned with `bottom: -70px` at >=768px,
+   so the section needs at least 70px of top padding to clear the
+   card, plus breathing room. Below 768px the card sits in normal
+   flow with no overhang, so the section needs less top padding.
+   Specific sections (e.g. .listings-cta) override these defaults. */
 .hero + .section {
   padding-top: 64px;
 }
 @media (min-width: 768px) {
-  .hero + .section {
-    padding-top: 80px;
-  }
-}
-@media (min-width: 1024px) {
   .hero + .section {
     padding-top: 200px;
   }
@@ -1942,12 +1940,11 @@ body.nav-open {
    Listings CTA — 2-col image + copy + red button, sits under the hero
    ========================================================================= */
 /* Listings CTA — padding-top accounts for the search card's overhang
-   past the hero/next-section boundary. The card has margin-bottom:
-   -160px on the search container at desktop, so the section needs
-   enough top padding to keep its content clear of the floating card.
-   The desktop padding-top is larger than the card's overhang so the
-   section's image + copy have breathing room from the hero — the
-   image isn't flush to the top of the section. */
+   past the hero/next-section boundary. The card is absolutely
+   positioned with `bottom: -70px` at >=768px, so the card's bottom
+   is 70px below the hero's bottom. The section needs at least 70px
+   of top padding to clear the card, plus extra breathing room so the
+   image isn't flush to the bottom of the floating card. */
 .listings-cta {
   padding-block: var(--section-padding-mobile);
   padding-top: 96px;
@@ -1956,11 +1953,6 @@ body.nav-open {
 @media (min-width: 768px) {
   .listings-cta {
     padding-block: var(--section-padding-desktop);
-    padding-top: 80px;
-  }
-}
-@media (min-width: 1024px) {
-  .listings-cta {
     padding-top: 200px;
   }
 }

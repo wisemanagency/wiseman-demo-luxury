@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface Property {
   _id: string;
@@ -102,6 +102,38 @@ export default function PropertyFilter({ properties, towns, propertyTypes }: Pro
   const [priceRange, setPriceRange] = useState("");
   const [sort, setSort] = useState("newest");
   const [search, setSearch] = useState("");
+
+  // Hydrate filter state from the URL query string so the hero's search
+  // card (Sales / Rentals tabs + free-text q field + dropdowns) lands
+  // on /properties with the matching filters pre-applied. Sales maps
+  // to "for-sale", Rentals maps to "for-rent". Runs once on mount so
+  // subsequent filter changes don't fight the URL.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const urlStatus = params.get("status");
+    const urlBeds = params.get("bedrooms");
+    const urlMaxPrice = params.get("maxPrice");
+    const urlQ = params.get("q");
+    const urlTown = params.get("town");
+    const urlType = params.get("propertyType");
+    if (urlStatus) setStatus(urlStatus);
+    if (urlBeds) setMinBeds(urlBeds);
+    if (urlMaxPrice) {
+      // Map the hero's maxPrice dropdown (e.g. 500000) to the sidebar's
+      // range format (e.g. "0-500000"). Falls back to the raw max
+      // value if no matching range is found.
+      const range = priceRanges.find((r) => {
+        if (!r.value) return false;
+        const [max] = r.value.split("-").map(Number);
+        return max === Number(urlMaxPrice);
+      });
+      setPriceRange(range ? range.value : `0-${urlMaxPrice}`);
+    }
+    if (urlQ) setSearch(urlQ);
+    if (urlTown) setTown(urlTown);
+    if (urlType) setType(urlType);
+  }, []);
 
   const filtered = useMemo(() => {
     let result = [...properties];
