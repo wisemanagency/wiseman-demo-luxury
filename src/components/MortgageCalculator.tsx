@@ -38,8 +38,11 @@ function CollapsibleSection({ title, children }: { title: string; children: Reac
         className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors"
       >
         <span
-          className="text-sm font-bold"
-          style={{ fontFamily: "var(--font-display, Georgia, serif)" }}
+          className="text-lg font-extrabold tracking-wide"
+          style={{
+            fontFamily: "var(--font-display, Georgia, serif)",
+            color: "var(--color-text-primary, #1b2733)",
+          }}
         >
           {title}
         </span>
