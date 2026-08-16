@@ -4,7 +4,7 @@ import { formatPrice } from "@/lib/utils";
 interface Props {
   siteName: string;
   tagline?: string;
-  /** Featured property to highlight in the meta pill (bed/bath/sqft) */
+  /** Featured property to highlight as a small overlay on the photo. */
   featured?: {
     bedrooms?: number;
     bathrooms?: number;
@@ -15,71 +15,88 @@ interface Props {
     slug: string;
     thumbnail?: { asset: { url: string } };
   };
-  /** Background image URL for the hero. Falls back to a navy gradient. */
+  /** Background image URL for the right-hand photo. Falls back to a navy gradient. */
   backgroundImage?: string;
 }
 
 const { siteName, tagline, featured, backgroundImage } = Astro.props;
 
-const heroBg = backgroundImage
-  ? `url('${backgroundImage}')`
-  : "linear-gradient(135deg, var(--color-brand-navy) 0%, var(--color-brand-navy-dark) 100%)";
+const heroImg = backgroundImage || "/estate-demo-hero.webp";
 ---
 
 <section class="hero" aria-label="Homepage hero">
-  <div class="hero-bg" style={`background-image: ${heroBg};`}></div>
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <span class="hero-eyebrow">Sampletown · Established 2014</span>
+      <h1>{tagline || "Refined property expertise for the Sampletown market."}</h1>
+      <p class="hero-sub">
+        A single named agent from your first viewing through to completion —
+        accurate valuations, careful photography, and no scripts.
+      </p>
+      <div class="hero-cta-row">
+        <a href="/valuation" class="btn btn-primary">Book a Valuation</a>
+        <a href="/properties" class="btn btn-outline btn-outline-dark">Browse Listings</a>
+      </div>
+    </div>
 
-  <div class="container hero-inner">
-    <h1>{tagline || "London property, we get it."}</h1>
-    <p class="hero-sub">
-      Expert guidance from your first viewing through to completion.
-    </p>
-
-    <div class="hero-pill-row">
-      <a href="/properties?status=for-sale" class="hero-pill">For Sale</a>
-      <a href="/properties?status=for-rent" class="hero-pill">To Let</a>
-      <a href="/valuation" class="hero-pill">Free Valuation</a>
-      <a href="/map" class="hero-pill">Map Search</a>
+    <div class="hero-image">
+      <img
+        src={heroImg}
+        alt="An Estate Agent Demo agent greeting a client at the door of a Sampletown property"
+        loading="eager"
+        decoding="async"
+      />
+      {featured && (
+        <a href={`/properties/${featured.slug}`} class="hero-featured">
+          <span class="hero-featured-eyebrow">This week's featured</span>
+          <span class="hero-featured-title">{featured.title}</span>
+          <span class="hero-featured-price">
+            {formatPrice(featured.price, featured.priceQualifier)}
+          </span>
+        </a>
+      )}
     </div>
   </div>
 
-  <!-- Search sub-bar overhanging the hero bottom -->
-  <div class="container hero-search-wrap">
-    <form action="/properties" method="get" class="search-bar">
-      <input
-        type="text"
-        name="q"
-        class="sb-cell"
-        placeholder="Enter location, postcode or keyword…"
-        style="background-image: none; text-align: left;"
-      />
-      <select name="status" class="sb-cell" aria-label="Status">
-        <option value="">Any Status</option>
-        <option value="for-sale">For Sale</option>
-        <option value="for-rent">To Let</option>
-      </select>
-      <select name="bedrooms" class="sb-cell" aria-label="Bedrooms">
-        <option value="">Any Beds</option>
-        <option value="1">1+</option>
-        <option value="2">2+</option>
-        <option value="3">3+</option>
-        <option value="4">4+</option>
-      </select>
-      <select name="bathrooms" class="sb-cell" aria-label="Bathrooms">
-        <option value="">Any Baths</option>
-        <option value="1">1+</option>
-        <option value="2">2+</option>
-        <option value="3">3+</option>
-      </select>
-      <select name="maxPrice" class="sb-cell" aria-label="Max price">
-        <option value="">Max Price</option>
-        <option value="250000">Up to £250k</option>
-        <option value="500000">Up to £500k</option>
-        <option value="750000">Up to £750k</option>
-        <option value="1000000">Up to £1m</option>
-        <option value="2000000">Up to £2m</option>
-      </select>
-      <button type="submit" class="sb-submit">Search</button>
-    </form>
+  <!-- Floating search widget straddling the seam between the two columns -->
+  <div class="hero-search-container">
+    <div class="container">
+      <form action="/properties" method="get" class="search-bar search-bar-luxury">
+        <input
+          type="text"
+          name="q"
+          class="sb-cell"
+          placeholder="Enter location, postcode or keyword…"
+          style="background-image: none; text-align: left;"
+        />
+        <select name="status" class="sb-cell" aria-label="Status">
+          <option value="">Any Status</option>
+          <option value="for-sale">For Sale</option>
+          <option value="for-rent">To Let</option>
+        </select>
+        <select name="bedrooms" class="sb-cell" aria-label="Bedrooms">
+          <option value="">Any Beds</option>
+          <option value="1">1+</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+          <option value="4">4+</option>
+        </select>
+        <select name="bathrooms" class="sb-cell" aria-label="Bathrooms">
+          <option value="">Any Baths</option>
+          <option value="1">1+</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+        </select>
+        <select name="maxPrice" class="sb-cell" aria-label="Max price">
+          <option value="">Max Price</option>
+          <option value="250000">Up to £250k</option>
+          <option value="500000">Up to £500k</option>
+          <option value="750000">Up to £750k</option>
+          <option value="1000000">Up to £1m</option>
+          <option value="2000000">Up to £2m</option>
+        </select>
+        <button type="submit" class="sb-submit">Search</button>
+      </form>
+    </div>
   </div>
 </section>
