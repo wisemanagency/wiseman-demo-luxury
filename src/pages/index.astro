@@ -9,7 +9,6 @@ import FooterCTA from "@/components/FooterCTA.astro";
 import ImageTrio from "@/components/ImageTrio.astro";
 import { sanityClient, urlFor } from "@/lib/sanity";
 import {
-  featuredPropertiesQuery,
   siteSettingsQuery,
   allAreasQuery,
   allAgentsQuery,
@@ -18,12 +17,10 @@ import {
 import { formatPrice, statusLabel } from "@/lib/utils";
 
 const settings = await sanityClient.fetch(siteSettingsQuery);
-const properties = await sanityClient.fetch(featuredPropertiesQuery);
 const areas = await sanityClient.fetch(allAreasQuery);
 const agents = await sanityClient.fetch(allAgentsQuery);
 const allProperties = await sanityClient.fetch(allPropertiesQuery);
 
-const featuredForHero = properties?.[0];
 // Always use the dedicated hero asset; it has the right crop + overlay contrast.
 const heroBg = "/estate-demo-hero.webp";
 
@@ -57,18 +54,6 @@ const exploreProperties = (allProperties ?? []).slice(0, 8);
   <Hero
     siteName={settings?.siteName || "Estate Agent Demo"}
     tagline={settings?.siteTagline}
-    featured={featuredForHero
-      ? {
-          title: featuredForHero.title,
-          slug: featuredForHero.slug,
-          price: featuredForHero.price,
-          priceQualifier: featuredForHero.priceQualifier,
-          bedrooms: featuredForHero.bedrooms,
-          bathrooms: featuredForHero.bathrooms,
-          sqft: featuredForHero.sqft,
-          thumbnail: featuredForHero.thumbnail,
-        }
-      : undefined}
     backgroundImage={heroBg}
   />
 

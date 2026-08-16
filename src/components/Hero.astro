@@ -1,20 +1,7 @@
 ---
-import { formatPrice } from "@/lib/utils";
-
 interface Props {
   siteName: string;
   tagline?: string;
-  /** Featured property to highlight as a small overlay on the photo. */
-  featured?: {
-    bedrooms?: number;
-    bathrooms?: number;
-    sqft?: number;
-    price: number;
-    priceQualifier?: string;
-    title: string;
-    slug: string;
-    thumbnail?: { asset: { url: string } };
-  };
   /** Background image URL for the right-hand photo. Falls back to a navy gradient. */
   backgroundImage?: string;
 }
@@ -22,7 +9,7 @@ interface Props {
 // siteName is part of the public Props shape (back-compat with callers
 // that pass it) but isn't used in the hero layout itself, so we drop it
 // from the destructure.
-const { tagline, featured, backgroundImage } = Astro.props;
+const { tagline, backgroundImage } = Astro.props;
 
 const heroImg = backgroundImage || "/estate-demo-hero.webp";
 ---
@@ -49,15 +36,6 @@ const heroImg = backgroundImage || "/estate-demo-hero.webp";
         loading="eager"
         decoding="async"
       />
-      {featured && (
-        <a href={`/properties/${featured.slug}`} class="hero-featured">
-          <span class="hero-featured-eyebrow">This week's featured</span>
-          <span class="hero-featured-title">{featured.title}</span>
-          <span class="hero-featured-price">
-            {formatPrice(featured.price, featured.priceQualifier)}
-          </span>
-        </a>
-      )}
     </div>
   </div>
 
