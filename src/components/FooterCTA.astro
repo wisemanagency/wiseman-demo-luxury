@@ -1,11 +1,11 @@
 ---
 /**
  * Footer CTA band — used at the bottom of the homepage and about page.
- * Powder-teal background, serif heading, gold squiggle, two-column layout
+ * Powder-teal background, serif heading, gold divider, two-column layout
  * (photo + copy). Mirrors the sales demo's footer CTA but reskinned for
  * the luxury palette.
  */
-import SquiggleDivider from "@/components/SquiggleDivider.astro";
+import SectionDivider from "@/components/SectionDivider.astro";
 
 interface Props {
   /** Image to the left of the copy. Defaults to the office exterior asset. */
@@ -53,7 +53,7 @@ const {
     </div>
 
     <div class="cta-strip-copy">
-      <SquiggleDivider width={64} />
+      <SectionDivider width={64} />
       <span class="cta-strip-eyebrow">{eyebrow}</span>
       <h2>{heading}</h2>
       <p class="cta-strip-sub">{description}</p>

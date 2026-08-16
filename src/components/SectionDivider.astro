@@ -1,0 +1,53 @@
+---
+/**
+ * Gold divider — perfectly symmetrical horizontal rule with a centred
+ * diamond. Replaces the older "hand-drawn squiggle" treatment which
+ * placed two stacked wavy paths on the left half and one on the
+ * right (it read as inconsistent — see the inconsistent/inconsistent
+ * scribble complaint that this fixes).
+ *
+ * Layout (viewBox 0 0 80 8):
+ *   - left rule:  x=4 .. x=33   (29 units long, 1u thick, round caps)
+ *   - diamond:    centred at x=40, y=4  (6×6 rotated square)
+ *   - right rule: x=47 .. x=76  (mirror of left rule)
+ *
+ * Pure SVG, picks up the currentColor = `--color-luxury-gold`.
+ */
+interface Props {
+  /** Width in pixels (height auto-scales to maintain the viewBox
+   *  aspect ratio). Default 80. */
+  width?: number;
+  /** Set to "muted" to render at lower opacity, e.g. on dark backgrounds. */
+  tone?: "default" | "muted";
+  class?: string;
+}
+
+const { width = 80, tone = "default", class: className } = Astro.props;
+const opacity = tone === "muted" ? 0.55 : 1;
+---
+
+<svg
+  class={`section-divider ${className ?? ""}`}
+  width={width}
+  height={Math.round(width * (8 / 80))}
+  viewBox="0 0 80 8"
+  fill="none"
+  aria-hidden="true"
+  style={`opacity: ${opacity}; color: var(--color-luxury-gold);`}
+>
+  {/* Left horizontal rule */}
+  <line x1="4" y1="4" x2="33" y2="4" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
+  {/* Centred diamond — 6×6 square at (40, 4) rotated 45°. */}
+  <rect x="37" y="1" width="6" height="6" transform="rotate(45 40 4)" fill="currentColor" />
+  {/* Right horizontal rule — mirror of the left, same length / weight. */}
+  <line x1="47" y1="4" x2="76" y2="4" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
+</svg>
+
+<style>
+  /* Center cleanly above section headings. display: block + auto margins
+     lets it sit horizontally centered regardless of width. */
+  .section-divider {
+    display: block;
+    margin: 8px auto 14px;
+  }
+</style>
