@@ -986,57 +986,68 @@ body.nav-open {
 }
 
 /* =========================================================================
-   Hero — luxury split layout (off-white copy panel left, full-bleed photo
-   right) with a floating Sales/Rentals search widget straddling the seam.
+   Hero — split layout (copy panel left, photo right) inside the shared
+   --container-max, with a floating flat-text Sales/Rentals search card
+   straddling the seam and overhanging the hero / next-section boundary.
    ========================================================================= */
 .hero {
   position: relative;
-  background: var(--color-brand-navy);
+  /* Intentionally no background colour here. The photo column carries its
+     own navy fallback (see .hero-image) so a missing image still looks
+     intentional; painting the whole section navy bleeds into the area
+     where the floating search card lives and produces an unintended
+     full-width strip directly below the hero. */
   color: #fff;
   overflow: visible;
 }
 
-/* Two-column grid: copy panel + photo. We let the photo column bleed to
-   the right edge of the viewport by extending its grid track beyond the
-   container, while the copy panel stays inside the standard container. */
+/* Two-column grid: copy panel (left) + photo (right). The grid sits inside
+   the shared --container-max so the heading, photo, and search card all
+   align to the same x as the logo, nav, and rest of the page. */
 .hero-grid {
   display: grid;
   grid-template-columns: 1fr;
   align-items: stretch;
   min-height: 520px;
+  max-width: 100%;
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+@media (min-width: 768px) {
+  .hero-grid {
+    padding-inline: 40px;
+  }
 }
 @media (min-width: 1024px) {
   .hero-grid {
     grid-template-columns: 1fr 1fr;
     min-height: 620px;
+    max-width: var(--container-max);
   }
 }
 
-/* Left copy panel — flush to the container's left padding edge, generous
-   right padding, vertical centre. We deliberately drop the previous
-   `calc((100vw - container-max) / 2 + …)` formula so the heading and
-   sub-headline start at the same edge as the rest of the page content
-   (logo, nav, hero search card). */
+/* Left copy panel — the grid's padding-inline already supplies the left
+   gutter (so the text sits at the same x as the logo), so we only set
+   right padding here, plus the vertical padding for breathing room. */
 .hero-copy {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 56px 20px 64px;
+  padding: 56px 0 64px;
   background: var(--color-luxury-bg-soft);
   color: var(--color-text-primary);
 }
 @media (min-width: 768px) {
   .hero-copy {
-    padding: 80px 56px 80px 40px;
+    padding: 80px 56px 80px 0;
   }
 }
 @media (min-width: 1024px) {
   .hero-copy {
-    /* On desktop the photo column takes the right half of the container.
-       The copy panel is the left half; its left edge sits at the
-       container padding edge (40px) and its right edge sits at the
-       seam (50% of the container content area). */
-    padding: 80px 64px 80px 40px;
+    /* Generous right padding so the heading doesn't crowd the photo column
+       seam; left padding is 0 because the grid already aligns it to the
+       container padding edge. */
+    padding: 80px 64px 80px 0;
   }
 }
 
@@ -1173,24 +1184,33 @@ body.nav-open {
 /* Floating search card — left-anchored, straddles the hero/photo seam on
    desktop, stacks normally below the hero on tablet/mobile. The card
    carries its own shadow and border; the inner .search-bar drops its
-   own shadow so we don't get a double-stack. */
+   own shadow so we don't get a double-stack. The container shares the
+   shared --container-max so the card's left edge lines up with the logo
+   and hero-copy text. */
 .hero-search-container {
   position: relative;
   z-index: 5;
+  max-width: 100%;
+  margin-inline: auto;
   padding: 20px;
   display: flex;
   justify-content: flex-start;
 }
 @media (min-width: 768px) {
   .hero-search-container {
-    padding: 0 40px;
+    max-width: var(--container-max);
+    padding-inline: 40px;
   }
 }
 @media (min-width: 1024px) {
   /* Pull the card up so it overlaps the boundary between the copy
-     panel and the photo. */
+     panel and the photo. An asymmetric negative margin-bottom (larger
+     than the top) makes the card visibly extend past the
+     hero/next-section boundary so it physically straddles that seam
+     too — not just the hero/photo seam. */
   .hero-search-container {
     margin-top: -56px;
+    margin-bottom: -72px;
   }
 }
 @media (max-width: 1023.98px) {
@@ -1228,40 +1248,41 @@ body.nav-open {
   }
 }
 
-/* Sales / Rentals pill switcher — sits across the top of the card. */
+/* Sales / Rentals tabs — plain text labels along the top edge of the
+   card. No pill/button chrome; the active tab is indicated by brand-cyan
+   colour, bolder weight, and a thicker bottom border that visually
+   replaces the inactive separator. The row itself is transparent so the
+   card's white surface reads as a single element. */
 .hero-search-tabs {
   display: flex;
-  gap: 8px;
-  padding: 14px 14px 12px;
-  border-bottom: 1px solid var(--color-border-subtle);
-  background: var(--color-surface-alt);
+  gap: 28px;
+  padding: 18px 24px 0;
+  background: transparent;
 }
 .hero-search-tab {
-  flex: 1;
-  padding: 10px 14px;
-  background: #ffffff;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 999px;
+  padding: 4px 0 13px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--color-border-subtle);
   font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-text-secondary);
   cursor: pointer;
   transition:
-    background-color 0.15s ease,
     color 0.15s ease,
     border-color 0.15s ease;
 }
 .hero-search-tab:hover {
-  border-color: var(--color-brand-cyan);
   color: var(--color-brand-cyan);
 }
 .hero-search-tab.is-active {
-  background: var(--color-brand-cyan);
-  color: #ffffff;
-  border-color: var(--color-brand-cyan);
+  color: var(--color-brand-cyan);
+  font-weight: 600;
+  border-bottom: 2px solid var(--color-brand-cyan);
+  padding-bottom: 12px;
 }
 
 /* Drop the inner .search-bar's own shadow + radius when it's hosted by
