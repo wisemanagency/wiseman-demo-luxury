@@ -70,7 +70,7 @@ const socialIcons: Record<string, string> = {
 ---
 
 {variant === "full" ? (
-  <div class="card property-card">
+  <div class="card property-card agent-card-full">
     <a href={`/team/${slug}`} class="block">
       <div class="aspect-square overflow-hidden" style="background: var(--color-surface-alt);">
         {photoUrl ? (
@@ -79,7 +79,7 @@ const socialIcons: Record<string, string> = {
             alt={name}
             loading="lazy"
             decoding="async"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover agent-photo-luxury"
           />
         ) : (
           <div class="w-full h-full flex items-center justify-center" style="background: var(--color-border-subtle);">
@@ -93,7 +93,7 @@ const socialIcons: Record<string, string> = {
     <div class="card-body">
       <a href={`/team/${slug}`} class="block">
         <h3 class="text-section-heading" style="text-align: left; font-size: 17px; font-weight: 500; margin-bottom: 4px;">{name}</h3>
-        <p style="font-size: 13px; font-weight: 500; color: var(--color-brand-cyan); margin-bottom: 12px;">{role}</p>
+        <p style="font-size: 13px; font-weight: 500; color: var(--color-luxury-gold); margin-bottom: 12px;">{role}</p>
       </a>
       {branch && (
         <p style="font-size: 12px; color: var(--color-text-muted); margin-bottom: 12px;">{branch.name}</p>

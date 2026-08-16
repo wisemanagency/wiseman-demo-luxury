@@ -228,10 +228,11 @@ const exploreProperties = (allProperties ?? []).slice(0, 8);
                       </span>
                     </div>
                   )}
+                  <div class="agent-tile-overlay">
+                    <h3>{agent.name}</h3>
+                    <p class="agent-role">{agent.role}</p>
+                  </div>
                 </div>
-                <h3>{agent.name}</h3>
-                <p class="agent-role">{agent.role}</p>
-                {agent.branch?.name && <p>{agent.branch.name}</p>}
               </a>
             );
           })}
