@@ -19,7 +19,10 @@ interface Props {
   backgroundImage?: string;
 }
 
-const { siteName, tagline, featured, backgroundImage } = Astro.props;
+// siteName is part of the public Props shape (back-compat with callers
+// that pass it) but isn't used in the hero layout itself, so we drop it
+// from the destructure.
+const { tagline, featured, backgroundImage } = Astro.props;
 
 const heroImg = backgroundImage || "/estate-demo-hero.webp";
 ---
